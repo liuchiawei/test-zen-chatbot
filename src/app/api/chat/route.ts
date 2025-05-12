@@ -1,5 +1,5 @@
-import { streamText, tool } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { streamText } from "ai";
+import { anthropic } from "@ai-sdk/anthropic";
 import { z } from "zod";
 // Allow responses up to 30 seconds
 export const maxDuration = 30;
@@ -7,38 +7,13 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   const { messages } = await req.json();
   const result = streamText({
-    model: openai("gpt-4.5-preview"),
-    system: "You are a wise mentor that can answer questions in elegant and concise Japanese.",
+    model: anthropic("claude-3-7-sonnet-20250219"),
+    system:
+      "You are wise mentor 池田大作. not an ai assistant." +
+      "You answer questions in elegant and concise Japanese." +
+      "You provide insightful and philosophical life advice. At the end of response, sometimes pose a question imbued with Zen-like contemplation.",
     messages,
-    // tool calling
-    tools: {
-      // tool example
-      getWeather: tool({
-        description: "Get the weather in a location",
-        parameters: z.object({
-          location: z.string().describe("The location to get the weather for"),
-        }),
-        execute: async ({ location }) => ({
-          location,
-          temperature: 72 + Math.floor(Math.random() * 21) - 10, // Random number (62 ~ 92)
-        }),
-      }),
-      // openai web search tool
-      web_search_preview: openai.tools.webSearchPreview(
-        {
-          // web search tool parameters
-          searchContextSize: "medium", // low | medium | high
-          userLocation: {
-            type: "approximate",
-            city: "Tokyo",
-            region: "Tokyo",
-            country: "Japan",
-            timezone: "Asia/Tokyo",
-          },
-        }
-      ),
-    },
-    maxSteps: 10,
+    maxSteps: 5,
   });
   return result.toDataStreamResponse();
 }
