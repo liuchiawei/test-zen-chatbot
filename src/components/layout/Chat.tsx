@@ -4,6 +4,7 @@ import { useChat } from '@ai-sdk/react';
 import MessagePart from '@/components/common/MessagePart';
 import InputPart from '@/components/common/InputPart';
 import HeaderPart from '@/components/common/HeaderPart';
+import MessageTitle from '@/components/common/MessageTitle';
 
 export default function Chat({ textScale }: { textScale: string }) {
   const { messages, setMessages, status, input, stop, reload, handleInputChange, handleSubmit, error } = useChat({
@@ -29,17 +30,15 @@ export default function Chat({ textScale }: { textScale: string }) {
   }
 
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 w-full max-w-5xl 2xl:max-w-7xl h-full mx-auto mt-6 px-4 pb-8'>
-      {/* title */}
-      <HeaderPart textScale={textScale} className='row-[span_1_/_span_2_]' />
-      {/* message */}
-      <div className='flex flex-col w-full'>
-        {/* chat area */}
-        <MessagePart messages={messages} error={error} status={status} handleEdit={handleEdit} handleDelete={handleDelete} reload={reload} textScale={textScale} />
-        {/* user input form */}
-        <InputPart handleSubmit={handleSubmit} input={input} handleInputChange={handleInputChange} status={status} stop={stop} />
-      </div>
-
+    <div className='grid grid-cols-1 md:grid-cols-2 grid-rows-[92px_1fr_64px] w-full max-w-5xl 2xl:max-w-7xl h-full mx-auto mt-6 px-4 pb-8'>
+      {/* ヘッダー画像 */}
+      <HeaderPart textScale={textScale} className='row-span-3' />
+      {/* メッセージタイトル */}
+      <MessageTitle className='col-start-1 md:col-start-2 row-start-1' />
+      {/* チャットエリア */}
+      <MessagePart messages={messages} error={error} status={status} handleEdit={handleEdit} handleDelete={handleDelete} reload={reload} textScale={textScale} />
+      {/* ユーザー入力フォーム */}
+      <InputPart handleSubmit={handleSubmit} input={input} handleInputChange={handleInputChange} status={status} stop={stop} />
     </div>
   );
 }

@@ -8,7 +8,8 @@
     "defaultContent": "デフォルトのコンテンツ",
     "role": {
       "user": "私",
-      "assistant": "池田先生"
+      "answer": "池田先生",
+      "answerImage": "/images/ikeda_01.jpg"
     },
     "input": {
       "placeholder": "質問を入力してください",
