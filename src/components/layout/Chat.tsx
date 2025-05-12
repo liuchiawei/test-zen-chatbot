@@ -1,12 +1,10 @@
 'use client';
 
 import { useChat } from '@ai-sdk/react';
-import { Trash2, Pencil, RotateCcw } from 'lucide-react';
-import { Send } from 'iconoir-react'
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import MessagePart from '@/components/common/MessagePart';
+import InputPart from '@/components/common/InputPart';
 
-export default function Page() {
+export default function Chat() {
   const { messages, setMessages, status, input, stop, reload, handleInputChange, handleSubmit, error } = useChat();
 
   const handleEdit = (id: string) => {
@@ -20,105 +18,18 @@ export default function Page() {
 
   return (
     <div className='flex flex-col items-center justify-center gap-2 h-full w-full max-w-4xl mx-auto p-2'>
-      <div className='flex flex-col justify-center border w-full p-2 text-justify'>
-        {messages.length === 0 ? (
-          <div className='p-2 border'>
-            <p className='text-zinc-500'>Chat Area</p>
-          </div>
-        ) : (
-          <>
-            {error ? <div className='p-2 border bg-red-800'>{error.message}</div> : null}
 
-            {messages.map(message => (
-              <div
-                key={message.id}
-                className={`p-2 flex flex-col justify-between gap-2 ${message.role === 'user' ? 'self-end' : 'self-start'}`}
-              >
-                {/* status indicator for latest response */}
-                {message.role === 'assistant' ? (
-                  <div className='text-sm text-zinc-700'>status: <span className='text-emerald-700'>{status}</span> - id: <span className='text-yellow-700'>{message.id}</span></div>
-                ) : null}
-
-                <div>
-                  <span className='text-zinc-700'>
-                    {message.role === 'user' ? 'Me > ' : 'AI > '}
-                  </span>
-
-                  <span className='text-justify leading-relaxed'>
-                    {message.content}
-                  </span>
-
-                  {message.role === 'assistant' && status === 'ready' ? (
-                    <span className='text-zinc-700 animate-pulse animate-duration-200'> _</span>
-                  ) : null}
-                </div>
-
-                {/* button set after message is sent */}
-                {status === 'ready' || status !== 'streaming' ? (
-                  <div className={`flex justify-center gap-2 ${message.role === 'user' ? 'self-end' : 'self-start'}`}>
-                    {/* edit button */}
-                    <button
-                      title='Edit'
-                      type='button'
-                      onClick={() => handleEdit(message.id)}
-                      disabled={!(status === 'ready' || status === 'error')}
-                      className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-zinc-700 p-1 rounded-md"
-                    >
-                      <Pencil className='size-4' />
-                    </button>
-
-                    {/* regenerate button */}
-                    <button
-                      title='Regenerate'
-                      type='button'
-                      onClick={() => reload()}
-                      disabled={!(status === 'ready' || status === 'error')}
-                      className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-zinc-700 p-1 rounded-md"
-                    >
-                      <RotateCcw className='size-4' />
-                    </button>
-
-                    {/* delete button */}
-                    <button
-                      title='Delete'
-                      type='button'
-                      onClick={() => handleDelete(message.id)}
-                      disabled={!(status === 'ready')}
-                      className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-zinc-700 p-1 rounded-md"
-                    >
-                      <Trash2 className='size-4' />
-                    </button>
-
-                  </div>
-                ) : null}
-              </div>
-            ))}
-
-          </>
-        )}
+      {/* title */}
+      <div className='flex flex-col items-center justify-center gap-2 w-full p-2 border'>
+        <h1 className='text-2xl font-bold'>Chat</h1>
       </div>
-      <form onSubmit={handleSubmit} className='flex items-center justify-center gap-2 w-full p-2 border' >
-        <Input
-          title='入力'
-          name="prompt"
-          placeholder='質問を入力してください'
-          value={input}
-          onChange={handleInputChange}
-          className='p-2 w-full'
-        />
-        <div className='flex items-center justify-center gap-2'>
-          {/* submit button */}
-          {input.length > 0 ? (
-            <Button title='送信' type="submit" size='icon' className='cursor-pointer'>
-              <Send className='size-4' />
-            </Button>
-          ) : null}
-          {/* stop button */}
-          {status === 'streaming' || status === 'submitted' ? (
-            <Button title='Stop' type="reset" className='py-2 px-4 border cursor-pointer hover:bg-zinc-700' onClick={stop} disabled={!(status === 'streaming' || status === 'submitted')}>Stop</Button>
-          ) : null}
-        </div>
-      </form>
+
+      {/* chat area */}
+      <MessagePart messages={messages} error={error} status={status} handleEdit={handleEdit} handleDelete={handleDelete} reload={reload} />
+
+      {/* user input form */}
+      <InputPart handleSubmit={handleSubmit} input={input} handleInputChange={handleInputChange} status={status} stop={stop} />
+
     </div>
   );
 }
