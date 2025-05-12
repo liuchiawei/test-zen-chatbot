@@ -31,7 +31,7 @@ export default function HeaderPart({ className, textScale }: HeaderPartProps) {
       <p className={`hidden md:block px-12 py-8 text-border tracking-wide
         ${textScale === 'md'
           ? 'text-sm leading-6'
-          : 'text-lg leading-8'
+          : 'text-xl leading-8'
         }`}
       >
         {content.header.description}
