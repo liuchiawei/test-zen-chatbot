@@ -5,7 +5,7 @@ export default function AppSidebar() {
     <Sidebar className="bg-sidebar">
       <SidebarHeader className="items-center justify-center w-full p-3">
         <SidebarTrigger className="rounded-xs self-start" tooltipText={content.tooltip.sidebarOff}/>
-        <h1 className="text-5xl font-bold tracking-widest [writing-mode:vertical-rl] select-none">
+        <h1 className="text-white md:text-foreground text-shadow-lg md:text-shadow-none text-5xl font-bold tracking-[1.5rem] [writing-mode:vertical-rl] select-none">
           {content.sidebar.header.title}
         </h1>
       </SidebarHeader>

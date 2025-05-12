@@ -6,11 +6,6 @@ import content from '@/data/content.json';
 export default function MessagePart({ messages, error, status, handleEdit, handleDelete, reload, textScale }: MessagePartProps) {
   return (
     <div className='flex flex-col border w-full h-full text-justify pb-4'>
-      <div className='border-b p-8'>
-        <h1 className='text-xl text-center font-bold tracking-widest'>
-          {content.chat.title}
-        </h1>
-      </div>
         {messages && messages.length === 0 ? (
           // TODO: Default Question Area
           <div className='p-6'>
@@ -30,27 +25,27 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
             {messages && messages.map(message => (
               <div
                 key={message.id}
-                className="grid grid-cols-[18px_1fr_18px] md:grid-cols-[24px_1fr_24px] justify-center w-full"
+                className="grid grid-cols-[56px_1fr_12px] md:grid-cols-[60px_1fr_12px] justify-center w-full mt-3"
               >
                 {/* キャラクター表示 */}
                 <div
-                  className={`h-10 w-full flex items-center justify-center bg-stone-100 dark:bg-stone-800
+                  className={`w-full h-full flex justify-center
                   ${message.role === 'user' ? 'col-start-3' : 'col-start-1'}
-                  `} />
+                  `}>
+                  {message.role === 'user'
+                  ? ''
+                  : <div className="size-10 bg-stone-500 dark:bg-stone-200 rounded-full"></div>}
+                </div>
                 {/* テキストエリア */}
-                <div className={`w-full px-3 md:px-6 pt-2 flex flex-col gap-1 col-start-2 row-start-1
+                <div className={`w-full flex flex-col gap-1 col-start-2 row-start-1
                   ${message.role === 'user' ? 'items-end' : 'items-start'}
                   `}>
-                    {/* キャラクター名 */}
-                  <h3 className='font-bold tracking-wider text-stone-800 dark:text-stone-300'>
-                    {message.role === 'user' ? content.chat.role.user : content.chat.role.assistant}
-                  </h3>
-
                   {/* チャット内容 */}
                   <p className={`text-stone-700 dark:text-stone-400 text-justify tracking-wide
+                    ${message.role === 'user' ? 'bg-stone-50/50 dark:bg-stone-800/50 px-4 py-2 rounded-lg' : ''}
                     ${textScale === 'md'
-                      ? 'mt-1 text-sm leading-6'
-                      : 'mt-3 text-2xl leading-8'
+                      ? 'text-sm leading-6'
+                      : 'text-2xl leading-10'
                     }`}
                   >
                     {message.content}
@@ -58,7 +53,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
 
                   {/* ボタンセット */}
                   {status === 'ready' || status !== 'streaming' ? (
-                    <div className="flex mt-2 md:mt-4 opacity-40">
+                    <div className="flex mt-1 opacity-40">
                       {/* 編集ボタン */}
                       <button
                         title='Edit'
