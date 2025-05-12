@@ -50,7 +50,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                   <p className={`text-stone-700 dark:text-stone-400 text-justify tracking-wide
                     ${textScale === 'md'
                       ? 'mt-1 text-sm leading-6'
-                      : 'mt-3 text-lg leading-8'
+                      : 'mt-3 text-xl leading-8'
                     }`}
                   >
                     {message.content}
