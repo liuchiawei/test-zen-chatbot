@@ -3,9 +3,6 @@
 import { useChat } from '@ai-sdk/react';
 import { Trash2, Pencil, RotateCcw } from 'lucide-react';
 
-const title = "ChatGPT 4.5";
-const description = "ChatGPT 4.5 is a powerful AI model that can be used to generate text, images, and other content. ChatGPT 4.5 doesn't support model: openai.response() yet.";
-
 export default function Page() {
   const { messages, setMessages, status, input, stop, reload, handleInputChange, handleSubmit, error } = useChat();
 
@@ -108,10 +105,10 @@ export default function Page() {
         />
         <div className='flex items-center justify-center gap-2'>
           {/* submit button */}
-          <button title='Submit' type="submit" className='text-white p-2 border cursor-pointer hover:bg-zinc-700'>Submit</button>
+          <button title='Submit' type="submit" className='py-2 px-4 border cursor-pointer hover:bg-zinc-700'>Submit</button>
           {/* stop button */}
           {status === 'streaming' || status === 'submitted' ? (
-            <button title='Stop' type="reset" className='text-white p-2 border cursor-pointer hover:bg-zinc-700' onClick={stop} disabled={!(status === 'streaming' || status === 'submitted')}>Stop</button>
+            <button title='Stop' type="reset" className='py-2 px-4 border cursor-pointer hover:bg-zinc-700' onClick={stop} disabled={!(status === 'streaming' || status === 'submitted')}>Stop</button>
           ) : null}
         </div>
       </form>
