@@ -17,7 +17,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
             <p className={`text-stone-500
               ${textScale === 'md'
               ? 'text-sm'
-              : 'text-lg'}`}
+              : 'text-xl'}`}
             >
               {content.chat.defaultContent}
             </p>
