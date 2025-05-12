@@ -1,5 +1,6 @@
 'use client';
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MessagePartProps } from "@/lib/props";
 import { Pencil, RotateCcw, Trash2 } from "lucide-react";
 import content from '@/data/content.json';
@@ -34,7 +35,12 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                   `}>
                   {message.role === 'user'
                   ? ''
-                  : <div className="size-10 bg-stone-500 dark:bg-stone-200 rounded-full"></div>}
+                  : <Avatar>
+                      <AvatarImage src={content.chat.role.answerImage} />
+                      <AvatarFallback>
+                        {content.chat.role.answer.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>}
                 </div>
                 {/* テキストエリア */}
                 <div className={`w-full flex flex-col gap-1 col-start-2 row-start-1
