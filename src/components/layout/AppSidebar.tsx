@@ -1,0 +1,32 @@
+import { Sidebar, SidebarHeader, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarFooter, SidebarTrigger } from "@/components/ui/sidebar";
+import content from '@/data/content.json';
+export default function AppSidebar() {
+  return (
+    <Sidebar className="bg-sidebar">
+      <SidebarHeader className="items-center justify-center w-full p-3">
+        <SidebarTrigger className="rounded-xs self-start" tooltipText={content.tooltip.sidebarOff}/>
+        <h1 className="text-5xl font-bold tracking-widest [writing-mode:vertical-rl] select-none">
+          {content.sidebar.header.title}
+        </h1>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>
+            {content.sidebar.menu.title}
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {/* TODO: メニュー追加(map) */}
+              <SidebarMenuButton>新對話</SidebarMenuButton>
+              <SidebarMenuButton>新對話</SidebarMenuButton>
+              <SidebarMenuButton>新對話</SidebarMenuButton>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter>
+        Footer
+      </SidebarFooter>
+    </Sidebar>
+  );
+}

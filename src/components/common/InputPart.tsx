@@ -18,7 +18,7 @@ export default function InputPart({ handleSubmit, input, handleInputChange, stat
           placeholder={content.chat.input.placeholder}
           value={input}
           onChange={handleInputChange}
-          className='px-4 py-8 w-full rounded-none border'
+          className='px-4 py-8 w-full rounded-none'
         />
         <div className='h-full flex items-center justify-center'>
           {/* submit button */}

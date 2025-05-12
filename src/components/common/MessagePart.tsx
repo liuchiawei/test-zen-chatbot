@@ -32,7 +32,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                 }`}
               >
                 {/* キャラクター表示 */}
-                <div className="h-full w-10 flex items-center justify-center bg-stone-100 dark:bg-stone-900" />
+                <div className="h-full w-6 flex items-center justify-center bg-stone-100 dark:bg-stone-900" />
                 {/* テキストエリア */}
                 <div className={`w-full px-6 pt-6 pb-2 flex flex-col gap-1
                   ${message.role === 'user' ? 'items-end' : 'items-start'}

@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { Roboto, Noto_Serif_JP } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/common/ThemeProvider";
-import ThemeToggle from '@/components/common/ThemeToggle';
-import Nav from "@/components/ui/navigation";
-
+import { SidebarProvider } from "@/components/ui/sidebar";
+import AppSidebar from "@/components/layout/AppSidebar";
 const roboto = Roboto({
   variable: "--font-roboto-sans",
   subsets: ["latin"],
@@ -30,18 +29,18 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <body
-        className={`${notoSerifJP.variable} ${roboto.variable} bg-linear-to-br from-stone-50 to-stone-200 dark:from-stone-800 dark:to-stone-950 antialiased`}
+        className={`${notoSerifJP.variable} ${roboto.variable} bg-linear-to-br from-stone-50 to-stone-300 dark:from-stone-800 dark:to-stone-950 antialiased`}
       >
-        <Nav />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <Nav />
-          {children}
-          <ThemeToggle className="fixed top-2 left-2" />
+          <SidebarProvider>
+            <AppSidebar />
+            {children}
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>

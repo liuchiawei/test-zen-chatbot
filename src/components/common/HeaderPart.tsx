@@ -26,7 +26,7 @@ export default function HeaderPart({ className }: { className?: string }) {
         <Image src={images[index]} alt="header" fill className='object-cover transition' />
       </AspectRatio>
       {/* TODO: Carousel */}
-      <p className='hidden md:block px-12 py-8 leading-6 text-sm text-stone-400 dark:text-stone-600'>
+      <p className='hidden md:block px-12 py-8 leading-6 text-sm text-border'>
         {content.header.description}
        </p>
     </div>

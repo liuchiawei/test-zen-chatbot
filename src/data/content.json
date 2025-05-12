@@ -16,5 +16,23 @@
       "submit": "送信",
       "stop": "停止"
     }
+  },
+  "sidebar": {
+    "header": {
+      "title": "人間革命"
+    },
+    "menu": {
+      "title": "会話履歴"
+    },
+    "footer": {
+      "title": "メニュー"
+    }
+  },
+  "tooltip": {
+    "sidebarOn": "会話履歴を開く",
+    "sidebarOff": "会話履歴を閉じる"
+  },
+  "navigation": {
+    "title": "人間革命"
   }
 }
