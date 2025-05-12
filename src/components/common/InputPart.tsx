@@ -10,7 +10,7 @@ export default function InputPart({ handleSubmit, input, handleInputChange, stat
   return (
     <form
       onSubmit={handleSubmit}
-      className='flex items-center justify-center w-full border'
+      className='flex items-center justify-center w-full border-r border-l border-b'
     >
         <Input
           title={content.chat.input.title}

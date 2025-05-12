@@ -1,7 +1,9 @@
 import ThemeToggle from '@/components/common/ThemeToggle';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import NavOptionBar from '@/components/layout/NavOpionBar';
 import content from '@/data/content.json';
-export default function Nav() {
+
+export default function Nav({ textScale, onTextScaleChange }: { textScale: string, onTextScaleChange: (scale: string) => void }) {
   return (
     <nav className='flex items-center justify-between w-full px-4'>
       <SidebarTrigger className='rounded-xs' tooltipText={content.tooltip.sidebarOn}/>
@@ -10,7 +12,7 @@ export default function Nav() {
           {content.navigation.title}
         </h1>
       </div>
-      <ThemeToggle className='rounded-xs'/>
+      <NavOptionBar textScale={textScale} onTextScaleChange={onTextScaleChange} />
     </nav>
   );
 }

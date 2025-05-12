@@ -30,7 +30,9 @@
   },
   "tooltip": {
     "sidebarOn": "会話履歴を開く",
-    "sidebarOff": "会話履歴を閉じる"
+    "sidebarOff": "会話履歴を閉じる",
+    "mypage": "マイページ",
+    "textScale": "文字拡大"
   },
   "navigation": {
     "title": "人間革命"

@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { AspectRatio } from '../ui/aspect-ratio';
 import { cn } from '@/lib/utils';
+import { HeaderPartProps } from '@/lib/props';
 import content from '@/data/content.json';
 
-export default function HeaderPart({ className }: { className?: string }) {
+export default function HeaderPart({ className, textScale }: HeaderPartProps) {
   // 画像ファイル名リスト
   const images = ['/images/demo_1.jpg', '/images/demo_2.jpg', '/images/demo_3.jpg', '/images/demo_4.jpg'];
   const [index, setIndex] = useState(0);
@@ -26,9 +27,14 @@ export default function HeaderPart({ className }: { className?: string }) {
         <Image src={images[index]} alt="header" fill className='object-cover transition' />
       </AspectRatio>
       {/* TODO: Carousel */}
-      <p className='hidden md:block px-12 py-8 leading-6 text-sm text-border'>
+      <p className={`hidden md:block px-12 py-8 text-border tracking-wide
+        ${textScale === 'md'
+          ? 'text-sm leading-6'
+          : 'text-lg leading-8'
+        }`}
+      >
         {content.header.description}
-       </p>
+      </p>
     </div>
   );
 }
