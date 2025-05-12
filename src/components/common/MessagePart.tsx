@@ -2,79 +2,88 @@
 
 import { MessagePartProps } from "@/lib/props";
 import { Pencil, RotateCcw, Trash2 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import content from '@/data/content.json';
 export default function MessagePart({ messages, error, status, handleEdit, handleDelete, reload }: MessagePartProps) {
   return (
-    <div className='flex flex-col justify-center border w-full p-2 text-justify'>
+    <div className='flex flex-col border w-full h-full text-justify'>
+      <div className='border-b p-8'>
+        <h1 className='text-xl text-center font-black tracking-wider'>
+          {content.chat.title}
+        </h1>
+      </div>
         {messages && messages.length === 0 ? (
-          <div className='p-2 border'>
-            <p className='text-zinc-500'>Chat Area</p>
+          // TODO: Default Question Area
+          <div className='p-6'>
+            <p className='text-zinc-500'>{content.chat.defaultContent}</p>
           </div>
         ) : (
           <>
-            {error ? <div className='p-2 border bg-red-800'>{error.message}</div> : null}
+            {/* TODO: Error Area Style */}
+            {error ? <div className='p-6 bg-red-800'>{error.message}</div> : null}
 
             {messages && messages.map(message => (
               <div
                 key={message.id}
-                className={`p-2 flex flex-col justify-between gap-2 ${message.role === 'user' ? 'self-end' : 'self-start'}`}
+                className={`relative flex justify-center w-full
+                ${message.role === 'user'
+                  ? 'flex-row-reverse'
+                  : ''
+                }`}
               >
-                {/* status indicator for latest response */}
-                {message.role === 'assistant' ? (
-                  <div className='text-sm text-zinc-700'>status: <span className='text-emerald-700'>{status}</span> - id: <span className='text-yellow-700'>{message.id}</span></div>
-                ) : null}
+                {/* キャラクター表示 */}
+                <div className="h-full w-10 flex items-center justify-center bg-stone-100 dark:bg-stone-900" />
+                {/* テキストエリア */}
+                <div className={`w-full px-6 pt-6 pb-2 flex flex-col gap-1
+                  ${message.role === 'user' ? 'items-end' : 'items-start'}
+                  `}>
+                  <h3 className='font-bold text-stone-800 dark:text-stone-300'>
+                    {message.role === 'user' ? content.chat.role.user : content.chat.role.assistant}
+                  </h3>
 
-                <div>
-                  <span className='text-zinc-700'>
-                    {message.role === 'user' ? 'Me > ' : 'AI > '}
-                  </span>
-
-                  <span className='text-justify leading-relaxed'>
+                  <p className='text-stone-700 dark:text-stone-400 text-justify leading-relaxed'>
                     {message.content}
-                  </span>
+                  </p>
 
-                  {message.role === 'assistant' && status === 'ready' ? (
-                    <span className='text-zinc-700 animate-pulse animate-duration-200'> _</span>
+                  {/* button set after message is sent */}
+                  {status === 'ready' || status !== 'streaming' ? (
+                    <div className="flex gap-2 mt-4 opacity-40">
+                      {/* edit button */}
+                      <button
+                        title='Edit'
+                        type='button'
+                        onClick={() => handleEdit(message.id)}
+                        disabled={!(status === 'ready' || status === 'error')}
+                        className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-stone-500 p-2 rounded-xs"
+                      >
+                        <Pencil className='size-4' />
+                      </button>
+
+                      {/* regenerate button */}
+                      <button
+                        title='Regenerate'
+                        type='button'
+                        onClick={() => reload()}
+                        disabled={!(status === 'ready' || status === 'error')}
+                        className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-stone-500 p-2 rounded-xs"
+                      >
+                        <RotateCcw className='size-4' />
+                      </button>
+
+                      {/* delete button */}
+                      <button
+                        title='Delete'
+                        type='button'
+                        onClick={() => handleDelete(message.id)}
+                        disabled={!(status === 'ready')}
+                        className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-stone-500 p-2 rounded-xs"
+                      >
+                        <Trash2 className='size-4' />
+                      </button>
+
+                    </div>
                   ) : null}
                 </div>
-
-                {/* button set after message is sent */}
-                {status === 'ready' || status !== 'streaming' ? (
-                  <div className={`flex justify-center gap-2 ${message.role === 'user' ? 'self-end' : 'self-start'}`}>
-                    {/* edit button */}
-                    <button
-                      title='Edit'
-                      type='button'
-                      onClick={() => handleEdit(message.id)}
-                      disabled={!(status === 'ready' || status === 'error')}
-                      className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-zinc-700 p-1 rounded-md"
-                    >
-                      <Pencil className='size-4' />
-                    </button>
-
-                    {/* regenerate button */}
-                    <button
-                      title='Regenerate'
-                      type='button'
-                      onClick={() => reload()}
-                      disabled={!(status === 'ready' || status === 'error')}
-                      className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-zinc-700 p-1 rounded-md"
-                    >
-                      <RotateCcw className='size-4' />
-                    </button>
-
-                    {/* delete button */}
-                    <button
-                      title='Delete'
-                      type='button'
-                      onClick={() => handleDelete(message.id)}
-                      disabled={!(status === 'ready')}
-                      className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-zinc-700 p-1 rounded-md"
-                    >
-                      <Trash2 className='size-4' />
-                    </button>
-
-                  </div>
-                ) : null}
               </div>
             ))}
 

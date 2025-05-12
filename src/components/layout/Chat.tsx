@@ -3,6 +3,7 @@
 import { useChat } from '@ai-sdk/react';
 import MessagePart from '@/components/common/MessagePart';
 import InputPart from '@/components/common/InputPart';
+import HeaderPart from '@/components/common/HeaderPart';
 
 export default function Chat() {
   const { messages, setMessages, status, input, stop, reload, handleInputChange, handleSubmit, error } = useChat();
@@ -17,18 +18,17 @@ export default function Chat() {
   }
 
   return (
-    <div className='flex flex-col items-center justify-center gap-2 h-full w-full max-w-4xl mx-auto p-2'>
+    <div className='grid grid-cols-1 md:grid-cols-2 h-full w-full max-w-7xl mx-auto pb-4'>
 
       {/* title */}
-      <div className='flex flex-col items-center justify-center gap-2 w-full p-2 border'>
-        <h1 className='text-2xl font-bold'>Chat</h1>
+      <HeaderPart />
+      {/* message */}
+      <div className='flex flex-col w-full gap-6'>
+        {/* chat area */}
+        <MessagePart messages={messages} error={error} status={status} handleEdit={handleEdit} handleDelete={handleDelete} reload={reload} />
+        {/* user input form */}
+        <InputPart handleSubmit={handleSubmit} input={input} handleInputChange={handleInputChange} status={status} stop={stop} />
       </div>
-
-      {/* chat area */}
-      <MessagePart messages={messages} error={error} status={status} handleEdit={handleEdit} handleDelete={handleDelete} reload={reload} />
-
-      {/* user input form */}
-      <InputPart handleSubmit={handleSubmit} input={input} handleInputChange={handleInputChange} status={status} stop={stop} />
 
     </div>
   );

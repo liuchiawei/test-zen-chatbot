@@ -1,32 +1,32 @@
 'use client';
 
 import { InputPartProps } from "@/lib/props";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { Send } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Send, Pause } from "lucide-react";
+import content from '@/data/content.json';
 
 export default function InputPart({ handleSubmit, input, handleInputChange, status, stop }: InputPartProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className='flex items-center justify-center gap-2 w-full p-2 border'
+      className='flex items-center justify-center w-full border'
     >
         <Input
-          title='入力'
+          title={content.chat.input.title}
           name="prompt"
-          placeholder='質問を入力してください'
+          placeholder={content.chat.input.placeholder}
           value={input}
           onChange={handleInputChange}
-          className='p-2 w-full'
+          className='px-4 py-8 w-full rounded-none border'
         />
-        <div className='flex items-center justify-center gap-2'>
+        <div className='h-full flex items-center justify-center'>
           {/* submit button */}
           {input.length > 0 ? (
             <Button
-              title='送信'
+              title={content.chat.input.submit}
               type="submit"
-              size='icon'
-              className='cursor-pointer'
+              className='h-full aspect-square rounded-none cursor-pointer'
             >
               <Send className='size-4' />
             </Button>
@@ -34,11 +34,13 @@ export default function InputPart({ handleSubmit, input, handleInputChange, stat
           {/* stop button */}
           {status === 'streaming' || status === 'submitted' ? (
             <Button
-              title='Stop'
+              title={content.chat.input.stop}
               type="reset"
-              className='py-2 px-4 border cursor-pointer hover:bg-zinc-700' onClick={stop} disabled={!(status === 'streaming' || status === 'submitted')}
+              className='h-full aspect-square rounded-none cursor-pointer'
+              onClick={stop}
+              disabled={!(status === 'streaming' || status === 'submitted')}
             >
-              Stop
+              <Pause />
             </Button>
           ) : null}
         </div>
