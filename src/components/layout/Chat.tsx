@@ -29,7 +29,7 @@ export default function Chat({ textScale }: { textScale: string }) {
   }
 
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 w-full max-w-5xl 2xl:max-w-7xl h-full mx-auto mt-6 px-8 pb-8'>
+    <div className='grid grid-cols-1 md:grid-cols-2 w-full max-w-5xl 2xl:max-w-7xl h-full mx-auto mt-6 px-4 pb-8'>
       {/* title */}
       <HeaderPart textScale={textScale} className='row-[span_1_/_span_2_]' />
       {/* message */}
