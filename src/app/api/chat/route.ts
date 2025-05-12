@@ -1,6 +1,6 @@
 import { streamText } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
-import { z } from "zod";
+// import { z } from "zod";
 // Allow responses up to 30 seconds
 export const maxDuration = 30;
 
