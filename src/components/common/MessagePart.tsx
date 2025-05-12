@@ -8,14 +8,14 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
   return (
     <div className='flex flex-col border w-full h-full text-justify'>
       <div className='border-b p-8'>
-        <h1 className='text-xl text-center font-black tracking-wider'>
+        <h1 className='text-xl text-center font-bold tracking-widest'>
           {content.chat.title}
         </h1>
       </div>
         {messages && messages.length === 0 ? (
           // TODO: Default Question Area
           <div className='p-6'>
-            <p className='text-zinc-500'>{content.chat.defaultContent}</p>
+            <p className='text-stone-500'>{content.chat.defaultContent}</p>
           </div>
         ) : (
           <>
@@ -37,18 +37,20 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                 <div className={`w-full px-6 pt-6 pb-2 flex flex-col gap-1
                   ${message.role === 'user' ? 'items-end' : 'items-start'}
                   `}>
-                  <h3 className='font-bold text-stone-800 dark:text-stone-300'>
+                    {/* キャラクター名 */}
+                  <h3 className='font-bold tracking-wider text-stone-800 dark:text-stone-300'>
                     {message.role === 'user' ? content.chat.role.user : content.chat.role.assistant}
                   </h3>
 
+                  {/* チャット内容 */}
                   <p className='text-stone-700 dark:text-stone-400 text-justify leading-relaxed'>
                     {message.content}
                   </p>
 
-                  {/* button set after message is sent */}
+                  {/* ボタンセット */}
                   {status === 'ready' || status !== 'streaming' ? (
                     <div className="flex gap-2 mt-4 opacity-40">
-                      {/* edit button */}
+                      {/* 編集ボタン */}
                       <button
                         title='Edit'
                         type='button'
@@ -59,7 +61,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                         <Pencil className='size-4' />
                       </button>
 
-                      {/* regenerate button */}
+                      {/* 再生成ボタン */}
                       <button
                         title='Regenerate'
                         type='button'
@@ -70,7 +72,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                         <RotateCcw className='size-4' />
                       </button>
 
-                      {/* delete button */}
+                      {/* 削除ボタン */}
                       <button
                         title='Delete'
                         type='button'

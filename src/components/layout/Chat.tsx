@@ -6,7 +6,15 @@ import InputPart from '@/components/common/InputPart';
 import HeaderPart from '@/components/common/HeaderPart';
 
 export default function Chat() {
-  const { messages, setMessages, status, input, stop, reload, handleInputChange, handleSubmit, error } = useChat();
+  const { messages, setMessages, status, input, stop, reload, handleInputChange, handleSubmit, error } = useChat({
+    onFinish: () => {
+      // チャットが完了したら、画面の最下部にスクロール
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth'
+      });
+    },
+  });
 
   const handleEdit = (id: string) => {
     setMessages(messages.map(message => message.id === id ? { ...message, content: input } : message));
@@ -18,7 +26,7 @@ export default function Chat() {
   }
 
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 h-full w-full max-w-7xl mx-auto pb-4'>
+    <div className='grid grid-cols-1 md:grid-cols-2 h-full w-full mx-auto mt-6'>
 
       {/* title */}
       <HeaderPart />
