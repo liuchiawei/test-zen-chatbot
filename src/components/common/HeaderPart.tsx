@@ -18,6 +18,7 @@ export default function HeaderPart({ className, textScale }: HeaderPartProps) {
       setIndex(i => (i + 1) % images.length);
     }, 12000); // 12秒ごと
     return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

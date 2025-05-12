@@ -1,4 +1,3 @@
-import ThemeToggle from '@/components/common/ThemeToggle';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import NavOptionBar from '@/components/layout/NavOpionBar';
 import content from '@/data/content.json';
