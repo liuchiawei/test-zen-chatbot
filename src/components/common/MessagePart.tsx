@@ -5,7 +5,7 @@ import { Pencil, RotateCcw, Trash2 } from "lucide-react";
 import content from '@/data/content.json';
 export default function MessagePart({ messages, error, status, handleEdit, handleDelete, reload, textScale }: MessagePartProps) {
   return (
-    <div className='flex flex-col border w-full h-full text-justify'>
+    <div className='flex flex-col border w-full h-full text-justify pb-4'>
       <div className='border-b p-8'>
         <h1 className='text-xl text-center font-bold tracking-widest'>
           {content.chat.title}
@@ -17,7 +17,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
             <p className={`text-stone-500
               ${textScale === 'md'
               ? 'text-sm'
-              : 'text-xl'}`}
+              : 'text-2xl'}`}
             >
               {content.chat.defaultContent}
             </p>
@@ -30,7 +30,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
             {messages && messages.map(message => (
               <div
                 key={message.id}
-                className="grid grid-cols-[24px_1fr_24px] justify-center w-full"
+                className="grid grid-cols-[18px_1fr_18px] md:grid-cols-[24px_1fr_24px] justify-center w-full"
               >
                 {/* キャラクター表示 */}
                 <div
@@ -38,7 +38,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                   ${message.role === 'user' ? 'col-start-3' : 'col-start-1'}
                   `} />
                 {/* テキストエリア */}
-                <div className={`w-full px-6 pt-2 flex flex-col gap-1 col-start-2 row-start-1
+                <div className={`w-full px-3 md:px-6 pt-2 flex flex-col gap-1 col-start-2 row-start-1
                   ${message.role === 'user' ? 'items-end' : 'items-start'}
                   `}>
                     {/* キャラクター名 */}
@@ -50,7 +50,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                   <p className={`text-stone-700 dark:text-stone-400 text-justify tracking-wide
                     ${textScale === 'md'
                       ? 'mt-1 text-sm leading-6'
-                      : 'mt-3 text-xl leading-8'
+                      : 'mt-3 text-2xl leading-8'
                     }`}
                   >
                     {message.content}
@@ -58,7 +58,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
 
                   {/* ボタンセット */}
                   {status === 'ready' || status !== 'streaming' ? (
-                    <div className="flex gap-2 mt-4 opacity-40">
+                    <div className="flex mt-2 md:mt-4 opacity-40">
                       {/* 編集ボタン */}
                       <button
                         title='Edit'
