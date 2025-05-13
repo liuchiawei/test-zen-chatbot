@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { AspectRatio } from '../ui/aspect-ratio';
+import Image from 'next/image';
+import { motion } from 'motion/react';
+import VerticalTitle from './VerticalTitle';
 import { cn } from '@/lib/utils';
 import { HeaderPartProps } from '@/lib/props';
 import content from '@/data/content.json';
@@ -23,20 +25,38 @@ export default function HeaderPart({ className, textScale, isCoverOpen, handleCo
   }, []);
 
   return (
-    <div className={cn('w-full', className)}>
+    <div className={cn('w-full relative', className)}>
       <AspectRatio ratio={isCoverOpen ? 16 / 9 : 5 / 8} className='border md:border-r-0 shadow-lg'>
         {/* 画像カルーセル */}
         <Image src={images[index]} alt="header" fill className='object-cover transition-all cursor-pointer' onClick={handleCoverOpen} />
       </AspectRatio>
-      {/* TODO: Carousel */}
-      <p className={`hidden px-12 py-8 text-border tracking-wide
-        ${textScale === 'md'
-          ? 'text-sm leading-6'
-          : 'text-xl leading-8'}
-        ${isCoverOpen ? 'md:block' : ''}
-      `}>
-        {content.header.description}
-      </p>
+      {isCoverOpen ? (
+        <VerticalTitle text={content.header.title} className='top-24 md:top-[92px] md:[writing-mode:vertical-rl] left-1/2 md:left-20 -translate-x-1/2 md:translate-x-0 text-5xl md:text-7xl text-white text-shadow-lg' />
+      ) : ''}
+      {/* TODO: Smooth Image Carousel Animation*/}
+      {isCoverOpen ? (
+        <>
+          <motion.h3
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1 }}
+            className='hidden md:block mx-12 my-4 text-right text-accent font-roboto font-bold'
+          >
+            {content.header.title_eng}
+          </motion.h3>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className={`hidden md:block px-12 text-border tracking-wide text-justify
+              ${textScale === 'md'
+                ? 'text-sm leading-6'
+                : 'text-xl leading-8'}
+            `}>
+            {content.header.description}
+          </motion.p>
+        </>
+      ) : ''}
     </div>
   );
 }
