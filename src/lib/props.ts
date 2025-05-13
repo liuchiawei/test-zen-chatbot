@@ -3,6 +3,8 @@ import { Message } from "@ai-sdk/react";
 export type HeaderPartProps = {
   className?: string
   textScale: string,
+  isCoverOpen: boolean,
+  handleCoverOpen: () => void
 }
 
 export type MessagePartProps = {

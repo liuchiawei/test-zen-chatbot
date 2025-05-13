@@ -7,9 +7,10 @@ import { cn } from '@/lib/utils';
 import { HeaderPartProps } from '@/lib/props';
 import content from '@/data/content.json';
 
-export default function HeaderPart({ className, textScale }: HeaderPartProps) {
+export default function HeaderPart({ className, textScale, isCoverOpen, handleCoverOpen }: HeaderPartProps) {
   // 画像ファイル名リスト
   const images = ['/images/demo_1.jpg', '/images/demo_2.jpg', '/images/demo_3.jpg', '/images/demo_4.jpg'];
+
   const [index, setIndex] = useState(0);
 
   // 一定間隔で画像を切り替える
@@ -23,17 +24,17 @@ export default function HeaderPart({ className, textScale }: HeaderPartProps) {
 
   return (
     <div className={cn('w-full', className)}>
-      <AspectRatio ratio={16 / 9} className='border shadow-lg'>
+      <AspectRatio ratio={isCoverOpen ? 16 / 9 : 5 / 8} className='border md:border-r-0 shadow-lg'>
         {/* 画像カルーセル */}
-        <Image src={images[index]} alt="header" fill className='object-cover transition' />
+        <Image src={images[index]} alt="header" fill className='object-cover transition-all cursor-pointer' onClick={handleCoverOpen} />
       </AspectRatio>
       {/* TODO: Carousel */}
-      <p className={`hidden md:block px-12 py-8 text-border tracking-wide
+      <p className={`hidden px-12 py-8 text-border tracking-wide
         ${textScale === 'md'
           ? 'text-sm leading-6'
-          : 'text-xl leading-8'
-        }`}
-      >
+          : 'text-xl leading-8'}
+        ${isCoverOpen ? 'md:block' : ''}
+      `}>
         {content.header.description}
       </p>
     </div>
