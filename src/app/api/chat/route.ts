@@ -1,6 +1,5 @@
-import { streamText, tool } from "ai";
+import { streamText } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
-import { z } from "zod";
 import { tools } from "@/ai/tools";
 
 // Allow responses up to 30 seconds
