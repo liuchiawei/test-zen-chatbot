@@ -7,6 +7,14 @@ import { z } from "zod";
     
 // })
 
+const weathers = [
+    "sunny",
+    "cloudy",
+    "rainy",
+    "snowy",
+    "thunderstorm",
+]
+
 export const weatherTool = createTool({
     description: "Get the weather in a location",
     parameters: z.object({
@@ -14,7 +22,8 @@ export const weatherTool = createTool({
     }),
     execute: async ({ location }) => ({
         location,
-        temperature: 72 + Math.floor(Math.random() * 21) - 10, // Random number (62 ~ 92)
+        temperature: 72 + Math.floor(Math.random() * 21) - 10,
+        weather: weathers[Math.floor(Math.random() * weathers.length)],
     }),
 });
 
