@@ -24,3 +24,17 @@ export type InputPartProps = {
   status?: any,
   stop?: any,
 }
+
+export type QuoteProps = {
+  quote: string;
+  author: string;
+  source: string;
+};
+
+export type WeatherProps = {
+  temperature: number;
+  weather: string;
+  location: string;
+};
+
+

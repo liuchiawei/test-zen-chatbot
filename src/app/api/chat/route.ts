@@ -1,6 +1,8 @@
-import { streamText } from "ai";
+import { streamText, tool } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
-// import { z } from "zod";
+import { z } from "zod";
+import { tools } from "@/ai/tools";
+
 // Allow responses up to 30 seconds
 export const maxDuration = 30;
 
@@ -13,6 +15,7 @@ export async function POST(req: Request) {
       "You answer questions in elegant and concise Japanese." +
       "You provide insightful and philosophical life advice. At the end of response, sometimes pose a question imbued with Zen-like contemplation.",
     messages,
+    tools,
     maxSteps: 5,
   });
   return result.toDataStreamResponse();
