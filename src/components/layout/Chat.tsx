@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useChat } from '@ai-sdk/react';
 import MessagePart from '@/components/common/MessagePart';
 import InputPart from '@/components/common/InputPart';
@@ -21,10 +21,22 @@ export default function Chat({ textScale }: { textScale: string }) {
       });
     },
   });
-
+  // ページが開いた判断変数
+  const [isMounted, setIsMounted] = useState(false);
+  // モバイル判断変数
   const isMobile = useIsMobile();
+  // 表紙を開く/閉じる判断変数
   const [isCoverOpen, setIsCoverOpen] = useState(true);
-  
+
+  // ページが開いたら判断変数をtrueにする
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
+
   // 表紙を開く/閉じる
   const handleCoverOpen = () => {
     if (!isMobile) setIsCoverOpen(!isCoverOpen);

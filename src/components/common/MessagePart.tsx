@@ -1,10 +1,23 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MessagePartProps } from "@/lib/props";
 import { Pencil, RotateCcw, Trash2 } from "lucide-react";
+import { Weather } from '@/components/ai/Weather';
+import { QuotationReply } from '@/components/ai/QuotationReply';
 import content from '@/data/content.json';
+
 export default function MessagePart({ messages, error, status, handleEdit, handleDelete, reload, textScale }: MessagePartProps) {
+  // メッセージの最下部を参照する
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  // メッセージが追加されたらメッセージの最下部にスクロール
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, status]);
+
   return (
     <div className='flex flex-col border w-full h-full text-justify pb-4'>
         {messages && messages.length === 0 ? (
@@ -46,6 +59,47 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                 <div className={`w-full flex flex-col gap-1 col-start-2 row-start-1
                   ${message.role === 'user' ? 'items-end' : 'items-start'}
                   `}>
+
+                  {/* ツール呼び出しUI */}
+                  {message.role === 'assistant' && message.toolInvocations?.map(toolInvocation => {
+                    const { toolName, toolCallId, state } = toolInvocation;
+
+                    if (state !== 'result' && (toolName === 'displayWeather' || toolName === 'displayQuotation')) {
+                      return (
+                        <div key={toolCallId} className="mt-2 max-w-[85%] w-full flex justify-start">
+                          <div className="bg-card text-card-foreground shadow-sm rounded-2xl p-4 animate-pulse">
+                            Loading {toolName === 'displayWeather'
+                            ? 'weather information'
+                            : 'quotation'}...
+                          </div>
+                        </div>
+                      )
+                    }
+                    
+                    if (state === 'result') {
+                      {/* 天気情報 (テスト用) */}
+                        if (toolName === 'displayWeather') {
+                            const { result } = toolInvocation;
+                            return (
+                                <div key={toolCallId} className="mt-2 max-w-[85%] w-full flex justify-start">
+                                    <Weather {...result} />
+                                </div>
+                            );
+                        }
+                        if (toolName === 'replyWithQuotation') {
+                            const { result } = toolInvocation;
+                            return (
+                                <div key={toolCallId} className="mt-2 max-w-[85%] w-full flex justify-start">
+                                    <QuotationReply {...result} />
+                                </div>
+                            );
+                        }
+                    }
+
+                    return null;
+                  
+                  })}
+
                   {/* チャット内容 */}
                   <p className={`text-stone-700 dark:text-stone-400 text-justify tracking-wide
                     ${message.role === 'user' ? 'bg-stone-50/50 dark:bg-stone-800/50 px-4 py-2 rounded-lg' : ''}
@@ -101,6 +155,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
 
           </>
         )}
+        <div ref={messagesEndRef} />
       </div>
   );
 }
