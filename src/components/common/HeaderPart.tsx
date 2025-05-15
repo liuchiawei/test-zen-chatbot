@@ -26,7 +26,7 @@ export default function HeaderPart({ className, textScale, isCoverOpen, handleCo
 
   return (
     <div className={cn('w-full relative', className)}>
-      <AspectRatio ratio={isCoverOpen ? 16 / 9 : 5 / 8} className='border md:border-r-0 shadow-lg'>
+      <AspectRatio ratio={isCoverOpen ? 16 / 9 : 5 / 8} className='border md:border-r-0 shadow-lg '>
         {/* 画像カルーセル */}
         <Image src={images[index]} alt="header" fill className='object-cover transition-all cursor-pointer' onClick={handleCoverOpen} />
       </AspectRatio>
@@ -35,12 +35,12 @@ export default function HeaderPart({ className, textScale, isCoverOpen, handleCo
       ) : ''}
       {/* TODO: Smooth Image Carousel Animation*/}
       {isCoverOpen ? (
-        <>
+        <div className='flex flex-col gap-2 pt-4 pb-8 bg-linear-to-br from-black/0 to-black/20 backdrop-blur-xs'>
           <motion.h3
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1 }}
-            className='hidden md:block mx-12 my-4 text-right text-accent font-roboto font-bold'
+            className='hidden md:block mx-12 text-right text-accent font-roboto font-bold'
           >
             {content.header.title_eng}
           </motion.h3>
@@ -48,14 +48,14 @@ export default function HeaderPart({ className, textScale, isCoverOpen, handleCo
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
-            className={`hidden md:block px-12 text-border tracking-wide text-justify
+            className={`hidden md:block px-12 text-stone-200 tracking-wide text-justify
               ${textScale === 'md'
                 ? 'text-sm leading-6'
                 : 'text-xl leading-8'}
             `}>
             {content.header.description}
           </motion.p>
-        </>
+        </div>
       ) : ''}
     </div>
   );

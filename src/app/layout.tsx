@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <body
-        className={`${notoSerifJP.variable} ${roboto.variable} bg-linear-to-br from-stone-50 to-stone-300 dark:from-stone-800 dark:to-stone-950 antialiased`}
+        className={`${notoSerifJP.variable} ${roboto.variable} antialiased relative bg-[url('/images/demo_3.jpg')] dark:bg-[url('/images/demo_1.jpg')] bg-cover bg-center`}
       >
         <ThemeProvider
           attribute="class"

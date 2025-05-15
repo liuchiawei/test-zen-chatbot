@@ -6,11 +6,11 @@ import { Pencil, RotateCcw, Trash2 } from "lucide-react";
 import content from '@/data/content.json';
 export default function MessagePart({ messages, error, status, handleEdit, handleDelete, reload, textScale }: MessagePartProps) {
   return (
-    <div className='flex flex-col border w-full h-full text-justify pb-4'>
+    <div className='flex flex-col border w-full h-full text-justify pb-4 bg-linear-to-br from-black/0 to-white/20 backdrop-blur-xs'>
         {messages && messages.length === 0 ? (
           // TODO: Default Question Area
           <div className='p-6'>
-            <p className={`text-stone-500
+            <p className={`text-stone-200
               ${textScale === 'md'
               ? 'text-sm'
               : 'text-2xl'}`}
@@ -47,7 +47,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                   ${message.role === 'user' ? 'items-end' : 'items-start'}
                   `}>
                   {/* チャット内容 */}
-                  <p className={`text-stone-700 dark:text-stone-400 text-justify tracking-wide
+                  <p className={`text-stone-200 text-justify tracking-wide
                     ${message.role === 'user' ? 'bg-stone-50/50 dark:bg-stone-800/50 px-4 py-2 rounded-lg' : ''}
                     ${textScale === 'md'
                       ? 'text-sm leading-6'
@@ -59,14 +59,14 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
 
                   {/* ボタンセット */}
                   {status === 'ready' || status !== 'streaming' ? (
-                    <div className="flex mt-1 opacity-40">
+                    <div className="flex mt-1 opacity-50">
                       {/* 編集ボタン */}
                       <button
                         title='Edit'
                         type='button'
                         onClick={() => handleEdit(message.id)}
                         disabled={!(status === 'ready' || status === 'error')}
-                        className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-stone-500 p-2 rounded-xs"
+                        className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:text-white p-2 rounded-full"
                       >
                         <Pencil className='size-4' />
                       </button>
@@ -77,7 +77,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                         type='button'
                         onClick={() => reload()}
                         disabled={!(status === 'ready' || status === 'error')}
-                        className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-stone-500 p-2 rounded-xs"
+                        className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:text-white p-2 rounded-full"
                       >
                         <RotateCcw className='size-4' />
                       </button>
@@ -88,7 +88,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                         type='button'
                         onClick={() => handleDelete(message.id)}
                         disabled={!(status === 'ready')}
-                        className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-stone-500 p-2 rounded-xs"
+                        className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:text-white p-2 rounded-full"
                       >
                         <Trash2 className='size-4' />
                       </button>
