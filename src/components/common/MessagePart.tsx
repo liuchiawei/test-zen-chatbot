@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { motion } from 'motion/react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MessagePartProps } from "@/lib/props";
 import { Pencil, RotateCcw, Trash2 } from "lucide-react";
-import { Weather } from '@/components/ai/Weather';
 import { QuotationReply } from '@/components/ai/QuotationReply';
 import content from '@/data/content.json';
 
@@ -55,7 +55,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                       </AvatarFallback>
                     </Avatar>}
                 </div>
-                {/* テキストエリア */}
+                {/* メッセージエリア */}
                 <div className={`w-full flex flex-col gap-1 col-start-2 row-start-1
                   ${message.role === 'user' ? 'items-end' : 'items-start'}
                   `}>
@@ -64,28 +64,17 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                   {message.role === 'assistant' && message.toolInvocations?.map(toolInvocation => {
                     const { toolName, toolCallId, state } = toolInvocation;
 
-                    if (state !== 'result' && (toolName === 'displayWeather' || toolName === 'displayQuotation')) {
+                    if (state !== 'result' && (toolName === 'displayQuotation')) {
                       return (
                         <div key={toolCallId} className="mt-2 max-w-[85%] w-full flex justify-start">
                           <div className="bg-card text-card-foreground shadow-sm rounded-2xl p-4 animate-pulse">
-                            Loading {toolName === 'displayWeather'
-                            ? 'weather information'
-                            : 'quotation'}...
+                            Loading
                           </div>
                         </div>
                       )
                     }
                     
                     if (state === 'result') {
-                      {/* 天気情報 (テスト用) */}
-                        if (toolName === 'displayWeather') {
-                            const { result } = toolInvocation;
-                            return (
-                                <div key={toolCallId} className="mt-2 max-w-[85%] w-full flex justify-start">
-                                    <Weather {...result} />
-                                </div>
-                            );
-                        }
                         if (toolName === 'replyWithQuotation') {
                             const { result } = toolInvocation;
                             return (
@@ -101,15 +90,18 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                   })}
 
                   {/* チャット内容 */}
-                  <p className={`text-stone-700 dark:text-stone-400 text-justify tracking-wide
-                    ${message.role === 'user' ? 'bg-stone-50/50 dark:bg-stone-800/50 px-4 py-2 rounded-lg' : ''}
-                    ${textScale === 'md'
-                      ? 'text-sm leading-6'
-                      : 'text-2xl leading-10'
-                    }`}
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`text-stone-700 dark:text-stone-400 text-justify tracking-wide
+                      ${message.role === 'user' ? 'bg-stone-50/50 dark:bg-stone-800/50 px-4 py-2 rounded-lg' : ''}
+                      ${textScale === 'md'
+                        ? 'text-sm leading-6'
+                        : 'text-2xl leading-10'
+                      }`}
                   >
                     {message.content}
-                  </p>
+                  </motion.p>
 
                   {/* ボタンセット */}
                   {status === 'ready' || status !== 'streaming' ? (
