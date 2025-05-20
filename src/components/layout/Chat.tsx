@@ -5,6 +5,7 @@ import { useChat } from '@ai-sdk/react';
 import MessagePart from '@/components/common/MessagePart';
 import InputPart from '@/components/common/InputPart';
 import HeaderPart from '@/components/common/HeaderPart';
+import Cover from '@/components/common/Cover';
 import MessageTitle from '@/components/common/MessageTitle';
 import { useIsMobile } from '@/lib/isMobile';
 
@@ -52,17 +53,20 @@ export default function Chat({ textScale }: { textScale: string }) {
   }
 
   return (
-    <div className={`grid grid-cols-1 grid-rows-[92px_1fr_64px] w-full max-w-5xl 2xl:max-w-7xl h-full mx-auto mt-6 px-4 pb-8 transition-all
-      ${!isMobile && isCoverOpen ? 'md:grid-cols-2' : 'md:grid-cols-[96px_1fr]'}
-    `}>
+    <div className="flex flex-col-reverse md:flex-row w-full max-w-5xl 2xl:max-w-7xl h-full mx-auto mt-6 px-4 pb-8 transition-all">
+      {/* <HeaderPart textScale={textScale} isCoverOpen={isCoverOpen} handleCoverOpen={handleCoverOpen} className='row-span-3' /> */}
+      <div className='flex flex-col w-full h-full'>
+        {/* メッセージタイトル */}
+        <MessageTitle className='col-start-1 md:col-start-2 row-start-1' />
+        {/* チャットエリア */}
+        <MessagePart messages={messages} error={error} status={status} handleEdit={handleEdit} handleDelete={handleDelete} reload={reload} textScale={textScale} />
+        {/* ユーザー入力フォーム */}
+        <InputPart handleSubmit={handleSubmit} input={input} handleInputChange={handleInputChange} status={status} stop={stop} />
+      </div>
       {/* ヘッダー画像 */}
-      <HeaderPart textScale={textScale} isCoverOpen={isCoverOpen} handleCoverOpen={handleCoverOpen} className='row-span-3' />
-      {/* メッセージタイトル */}
-      <MessageTitle className='col-start-1 md:col-start-2 row-start-1' />
-      {/* チャットエリア */}
-      <MessagePart messages={messages} error={error} status={status} handleEdit={handleEdit} handleDelete={handleDelete} reload={reload} textScale={textScale} />
-      {/* ユーザー入力フォーム */}
-      <InputPart handleSubmit={handleSubmit} input={input} handleInputChange={handleInputChange} status={status} stop={stop} />
+      <div className='w-full md:w-3/4'>
+        <Cover />
+      </div>
     </div>
   );
 }

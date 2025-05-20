@@ -90,18 +90,29 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                   })}
 
                   {/* チャット内容 */}
-                  <motion.p
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`text-stone-700 dark:text-stone-400 text-justify tracking-wide
-                      ${message.role === 'user' ? 'bg-stone-50/50 dark:bg-stone-800/50 px-4 py-2 rounded-lg' : ''}
+                  {message.role === 'user' ? (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className={`rounded-lg text-stone-700 dark:text-stone-400 text-justify tracking-wide bg-stone-50/50 dark:bg-stone-800/50 px-4 py-2
+                        ${textScale === 'md'
+                          ? 'text-sm leading-6'
+                          : 'text-2xl leading-10'
+                        }`}
+                    >
+                      {message.content}
+                    </motion.div>
+                  ) : (
+                    <p className={`text-stone-700 dark:text-stone-400 text-justify tracking-wide
                       ${textScale === 'md'
                         ? 'text-sm leading-6'
                         : 'text-2xl leading-10'
-                      }`}
-                  >
-                    {message.content}
-                  </motion.p>
+                      }`}>
+                      {message.content}
+                    </p>
+                  )}
+
 
                   {/* ボタンセット */}
                   {status === 'ready' || status !== 'streaming' ? (
@@ -112,7 +123,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                         type='button'
                         onClick={() => handleEdit(message.id)}
                         disabled={!(status === 'ready' || status === 'error')}
-                        className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-stone-500 p-2 rounded-xs"
+                        className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-stone-500 p-2 rounded-full"
                       >
                         <Pencil className='size-4' />
                       </button>
@@ -123,7 +134,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                         type='button'
                         onClick={() => reload()}
                         disabled={!(status === 'ready' || status === 'error')}
-                        className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-stone-500 p-2 rounded-xs"
+                        className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-stone-500 p-2 rounded-full"
                       >
                         <RotateCcw className='size-4' />
                       </button>
@@ -134,7 +145,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                         type='button'
                         onClick={() => handleDelete(message.id)}
                         disabled={!(status === 'ready')}
-                        className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-stone-500 p-2 rounded-xs"
+                        className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-stone-500 p-2 rounded-full"
                       >
                         <Trash2 className='size-4' />
                       </button>
