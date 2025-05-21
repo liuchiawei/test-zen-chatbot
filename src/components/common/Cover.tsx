@@ -8,7 +8,7 @@ export default function Cover() {
   return (
     <AspectRatio ratio={5 / 7}>
       <div
-        className="w-full h-full bg-stone-50 dark:bg-stone-100 shadow-lg dark:shadow-none px-12 py-4 grid grid-rows-12 cursor-pointer"
+        className="w-full h-full bg-stone-50 dark:bg-stone-200 shadow-lg dark:shadow-none px-10 py-4 grid grid-rows-12 cursor-pointer"
       >
         <div className="row-start-1 row-span-3 text-center flex flex-col items-center justify-center gap-2">
           <h1

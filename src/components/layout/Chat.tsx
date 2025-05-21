@@ -57,7 +57,7 @@ export default function Chat({ textScale }: { textScale: string }) {
   return (
     <div className="flex flex-col-reverse md:flex-row justify-center items-center md:items-start w-full max-w-5xl 2xl:max-w-7xl h-full min-h-screen mx-auto mt-6 px-4 pb-8 transition-all overflow-hidden">
       <motion.div
-        className={`block flex flex-col w-full h-full relative bg-stone-50/50 z-10 shadow-md backdrop-blur-sm transition-all
+        className={`block flex flex-col w-full h-full relative bg-stone-50/50 dark:bg-stone-900/50 z-10 shadow-md backdrop-blur-sm transition-all
           ${isChatOpen ? '' : 'md:hidden'}
         `}
         initial={{ opacity: 0, x: 100 }}
