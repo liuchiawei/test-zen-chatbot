@@ -17,9 +17,9 @@ export default function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {/* TODO: メニュー追加(map) */}
-              <SidebarMenuButton>新對話</SidebarMenuButton>
-              <SidebarMenuButton>新對話</SidebarMenuButton>
-              <SidebarMenuButton>新對話</SidebarMenuButton>
+              <SidebarMenuButton>{content.chat.title}</SidebarMenuButton>
+              <SidebarMenuButton>{content.chat.title}</SidebarMenuButton>
+              <SidebarMenuButton>{content.chat.title}</SidebarMenuButton>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
