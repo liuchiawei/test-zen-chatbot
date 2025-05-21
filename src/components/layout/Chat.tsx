@@ -5,11 +5,9 @@ import { useChat } from '@ai-sdk/react';
 import { AnimatePresence, motion } from 'motion/react';
 import MessagePart from '@/components/common/MessagePart';
 import InputPart from '@/components/common/InputPart';
-import HeaderPart from '@/components/common/HeaderPart';
 import Cover from '@/components/common/Cover';
 import MessageTitle from '@/components/common/MessageTitle';
 import { useIsMobile } from '@/lib/isMobile';
-import { Divide } from 'lucide-react';
 
 export default function Chat({ textScale }: { textScale: string }) {
   const { messages, setMessages, status, input, stop, reload, handleInputChange, handleSubmit, error } = useChat({
@@ -57,8 +55,7 @@ export default function Chat({ textScale }: { textScale: string }) {
   }
 
   return (
-    <div className="flex flex-col-reverse md:flex-row justify-center items-center md:items-start w-full max-w-5xl 2xl:max-w-7xl h-full mx-auto mt-6 px-4 pb-8 transition-all">
-      {/* <HeaderPart textScale={textScale} isCoverOpen={isCoverOpen} handleCoverOpen={handleCoverOpen} className='row-span-3' /> */}
+    <div className="flex flex-col-reverse md:flex-row justify-center items-center md:items-start w-full max-w-5xl 2xl:max-w-7xl h-full mx-auto mt-6 px-4 pb-8 transition-all overflow-hidden">
       <motion.div
         className={`block flex flex-col w-full h-full relative bg-stone-50/50 z-10 shadow-md backdrop-blur-sm transition-all
           ${isChatOpen ? '' : 'md:hidden'}
