@@ -99,19 +99,18 @@ export default function Chat({ textScale }: { textScale: string }) {
                 setIsChatOpen(true);
                 handleCoverOpen()}}
               initial={isChatOpen
-                ? { opacity: 0, x: '-100%', y: 0, scale: 1 }
-                : { opacity: 0, x: 0, y: 100, scale: 0 }}
-              animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+                ? { opacity: 0, x: '-100%', y: 0 }
+                : { opacity: 0, x: 0, y: 100 }}
+              animate={{ opacity: 1, x: 0, y: 0 }}
               exit={isChatOpen
-                ? { opacity: 0, x: '-100%', y: 0, scale: 1 }
-                : { opacity: 0, x: 0, y: 100, scale: 0 }}
+                ? { opacity: 0, x: '-100%', y: 0 }
+                : { opacity: 0, x: 0, y: 0 }}
               transition={{
                 x: { type: 'spring', duration: 0.25 },
                 y: { type: 'spring', duration: 0.3 },
                 opacity: isChatOpen
                 ? { duration: 0.2, delay: 0.1 }
                 : { duration: 0.3 },
-                scale: { type: 'spring', duration: 0.3 }
               }}
             >
               <Cover />

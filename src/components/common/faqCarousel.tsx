@@ -23,8 +23,8 @@ export default function FaqCarousel({ textScale, input, handleSubmit, handleInpu
           />
         ))}
       </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
+      <CarouselPrevious className="cursor-pointer hover:text-white" />
+      <CarouselNext className="cursor-pointer hover:text-white" />
     </Carousel>
   );
 }
