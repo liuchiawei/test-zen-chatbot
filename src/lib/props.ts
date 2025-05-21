@@ -41,12 +41,14 @@ export type WeatherProps = {
 };
 
 export type FaqCarouselProps = {
+  textScale: string;
   input?: any;
   handleSubmit?: () => void;
   handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export type FaqProps = {
+  textScale: string;
   question: string;
   input?: any;
   handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;

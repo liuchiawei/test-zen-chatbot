@@ -164,16 +164,16 @@ export default function MessagePart({
   return (
     <div className='flex flex-col border w-full h-full text-justify pb-4 overflow-hidden'>
         {messages && messages.length === 0 ? (
-          // TODO: Default Question Area
           <div className='px-18'>
-            <p className={`text-stone-500
+            <h1 className={`my-6 text-xl text-stone-500
               ${textScale === 'md'
               ? 'text-sm'
               : 'text-2xl'}`}
             >
               {content.chat.defaultContent}
-            </p>
+            </h1>
             <FaqCarousel
+              textScale={textScale}
               input={input}
               handleSubmit={handleSubmit}
               handleInputChange={handleInputChange}
