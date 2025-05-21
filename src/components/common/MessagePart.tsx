@@ -91,7 +91,7 @@ export default function MessagePart({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className={`bg-background rounded-lg text-stone-700 dark:text-stone-400 text-justify tracking-wide px-4 py-2 shadow-sm
+                  className={`bg-background dark:bg-stone-800 rounded-lg text-stone-700 dark:text-stone-400 text-justify tracking-wide px-4 py-2 shadow-sm
                     ${textScale === 'md'
                       ? 'text-sm leading-6'
                       : 'text-2xl leading-10'
