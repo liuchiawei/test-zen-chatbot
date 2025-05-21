@@ -11,9 +11,9 @@ export default function AppSubTitle({ className }: { className?: string }) {
         "text-sm tracking-widest [writing-mode:vertical-rl] select-none",
         className
       )}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
+      initial={{ opacity: 0, y: 15, filter: 'blur(3px)' }}
+      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      transition={{ duration: 0.3 }}
     >
       {content.header.subTitle}
     </motion.h2>
