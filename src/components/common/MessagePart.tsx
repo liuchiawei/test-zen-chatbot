@@ -9,7 +9,18 @@ import { QuotationReply } from '@/components/ai/QuotationReply';
 import { MessagePartProps } from "@/lib/props";
 import content from '@/data/content.json';
 
-export default function MessagePart({ messages, error, status, handleEdit, handleDelete, reload, textScale }: MessagePartProps) {
+export default function MessagePart({
+  messages,
+  error,
+  status,
+  handleEdit,
+  handleDelete,
+  reload,
+  textScale,
+  input,
+  handleSubmit,
+  handleInputChange
+}: MessagePartProps) {
   // メッセージの最下部を参照する
   const messagesEndRef = useRef<HTMLDivElement>(null);
   // メッセージが追加されたらメッセージの最下部にスクロール
@@ -86,7 +97,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className={`rounded-lg text-stone-700 dark:text-stone-400 text-justify tracking-wide bg-stone-50/50 dark:bg-stone-800/50 px-4 py-2 shadow-sm
+                  className={`bg-background rounded-lg text-stone-700 dark:text-stone-400 text-justify tracking-wide px-4 py-2 shadow-sm
                     ${textScale === 'md'
                       ? 'text-sm leading-6'
                       : 'text-2xl leading-10'
@@ -154,7 +165,7 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
     <div className='flex flex-col border w-full h-full text-justify pb-4 overflow-hidden'>
         {messages && messages.length === 0 ? (
           // TODO: Default Question Area
-          <div className='p-6 border border-red-500'>
+          <div className='px-18'>
             <p className={`text-stone-500
               ${textScale === 'md'
               ? 'text-sm'
@@ -162,7 +173,11 @@ export default function MessagePart({ messages, error, status, handleEdit, handl
             >
               {content.chat.defaultContent}
             </p>
-            <FaqCarousel />
+            <FaqCarousel
+              input={input}
+              handleSubmit={handleSubmit}
+              handleInputChange={handleInputChange}
+            />
           </div>
         ) : (
           renderedMessages
