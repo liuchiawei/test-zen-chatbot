@@ -67,7 +67,7 @@ export default function MessagePart({
                 const { toolName, toolCallId, state } = toolInvocation;
 
                 if (state !== 'result' && (toolName === 'replyWithQuotation')) {
-                  return <LoadingThreeDotsJumping />
+                  return <LoadingThreeDotsJumping key={toolCallId} />
                 }
                 
                 if (state === 'result') {
