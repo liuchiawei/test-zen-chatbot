@@ -10,18 +10,7 @@ import MessageTitle from '@/components/common/MessageTitle';
 import { useIsMobile } from '@/lib/isMobile';
 
 export default function Chat({ textScale }: { textScale: string }) {
-  const { messages, setMessages, status, input, stop, reload, handleInputChange, handleSubmit, error } = useChat({
-    onFinish: () => {
-      // チャットが完了したら、画面の最下部にスクロール
-      // ウィンドウサイズを再計算してからスクロール
-      requestAnimationFrame(() => {
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: 'smooth'
-        });
-      });
-    },
-  });
+  const { messages, setMessages, status, input, stop, reload, handleInputChange, handleSubmit, error } = useChat();
   // ページが開いた判断変数
   const [isMounted, setIsMounted] = useState(false);
   // モバイル判断変数
@@ -55,7 +44,7 @@ export default function Chat({ textScale }: { textScale: string }) {
   }
 
   return (
-    <div className="flex flex-col-reverse md:flex-row justify-center items-center md:items-start w-full max-w-5xl 2xl:max-w-7xl h-full min-h-screen mx-auto mt-6 px-4 pb-8 transition-all overflow-hidden">
+    <div className="flex flex-col-reverse md:flex-row justify-center items-center md:items-start w-full max-w-5xl 2xl:max-w-7xl h-full min-h-screen mx-auto mt-6 px-4 pb-8 transition-all">
       <motion.div
         className={`block flex flex-col w-full h-full relative bg-stone-100 dark:bg-stone-900/50 z-10 shadow-md backdrop-blur-sm transition-all
           ${isChatOpen ? '' : 'md:hidden'}
@@ -110,12 +99,12 @@ export default function Chat({ textScale }: { textScale: string }) {
                 setIsChatOpen(true);
                 handleCoverOpen()}}
               initial={isChatOpen
-                ? { opacity: 0, x: '-100%' }
-                : { opacity: 0, y: 100 }}
-              animate={{ opacity: 1, x: 0, y: 0 }}
+                ? { opacity: 0, x: '-100%', y: 0, scale: 1 }
+                : { opacity: 0, x: 0, y: 100, scale: 0 }}
+              animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
               exit={isChatOpen
-                ? { opacity: 0, x: '-100%' }
-                : { opacity: 0, scale: 0 }}
+                ? { opacity: 0, x: '-100%', y: 0, scale: 1 }
+                : { opacity: 0, x: 0, y: 100, scale: 0 }}
               transition={{
                 x: { type: 'spring', duration: 0.25 },
                 y: { type: 'spring', duration: 0.3 },
@@ -124,7 +113,6 @@ export default function Chat({ textScale }: { textScale: string }) {
                 : { duration: 0.3 },
                 scale: { type: 'spring', duration: 0.3 }
               }}
-              whileTap={{ y: 4 }}
             >
               <Cover />
             </motion.div>

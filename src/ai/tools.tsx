@@ -1,32 +1,6 @@
 import { tool as createTool } from "ai";
 import { z } from "zod";
 
-// export const recommendProduct = createTool({
-//     name: "recommend_product",
-//     description: "Recommends a product to the user. Provide details like name, description, image URL, price, store, and link.",
-    
-// })
-
-const weathers = [
-    "sunny",
-    "cloudy",
-    "rainy",
-    "snowy",
-    "thunderstorm",
-]
-
-export const weatherTool = createTool({
-    description: "Get the weather in a location",
-    parameters: z.object({
-        location: z.string().describe("The location to get the weather for"),
-    }),
-    execute: async ({ location }) => ({
-        location,
-        temperature: 72 + Math.floor(Math.random() * 21) - 10,
-        weather: weathers[Math.floor(Math.random() * weathers.length)],
-    }),
-});
-
 export const quotationReplyTool = createTool({
     description: "Reply to the user with a quotation from 池田大作.",
     parameters: z.object({
@@ -43,6 +17,5 @@ export const quotationReplyTool = createTool({
 });
 
 export const tools = {
-    displayWeather: weatherTool,
     replyWithQuotation: quotationReplyTool,
 }

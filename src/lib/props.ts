@@ -29,6 +29,7 @@ export type InputPartProps = {
 }
 
 export type QuoteProps = {
+  textScale: string;
   quote: string;
   author: string;
   source: string;

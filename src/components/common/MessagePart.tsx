@@ -8,7 +8,7 @@ import FaqCarousel from '@/components/common/faqCarousel';
 import { QuotationReply } from '@/components/ai/QuotationReply';
 import { MessagePartProps } from "@/lib/props";
 import content from '@/data/content.json';
-
+import LoadingThreeDotsJumping from '@/components/common/loading';
 export default function MessagePart({
   messages,
   error,
@@ -41,7 +41,7 @@ export default function MessagePart({
         {messages.map(message => (
           <div
             key={message.id}
-            className="grid grid-cols-[56px_1fr_12px] md:grid-cols-[60px_1fr_12px] justify-center w-full mt-3"
+            className="px-2 md:px-3 grid grid-cols-[56px_1fr_12px] md:grid-cols-[60px_1fr_12px] justify-center w-full mt-6"
           >
             {/* キャラクター表示 */}
             <div
@@ -66,14 +66,8 @@ export default function MessagePart({
               {message.role === 'assistant' && message.toolInvocations?.map(toolInvocation => {
                 const { toolName, toolCallId, state } = toolInvocation;
 
-                if (state !== 'result' && (toolName === 'displayQuotation')) {
-                  return (
-                    <div key={toolCallId} className="mt-2 max-w-[85%] w-full flex justify-start">
-                      <div className="bg-card text-card-foreground shadow-sm rounded-2xl p-4 animate-pulse">
-                        Loading
-                      </div>
-                    </div>
-                  )
+                if (state !== 'result' && (toolName === 'replyWithQuotation')) {
+                  return <LoadingThreeDotsJumping />
                 }
                 
                 if (state === 'result') {
@@ -81,7 +75,7 @@ export default function MessagePart({
                         const { result } = toolInvocation;
                         return (
                             <div key={toolCallId} className="mt-2 max-w-[85%] w-full flex justify-start">
-                                <QuotationReply {...result} />
+                                <QuotationReply textScale={textScale} {...result} />
                             </div>
                         );
                     }
@@ -157,6 +151,8 @@ export default function MessagePart({
             </div>
           </div>
         ))}
+
+        {status === 'submitted' && <LoadingThreeDotsJumping />}
       </>
     );
   }, [messages, status, error, textScale, handleEdit, handleDelete, reload]);
