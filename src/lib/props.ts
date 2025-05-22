@@ -15,6 +15,7 @@ export type MessagePartProps = {
   handleDelete?: any,
   reload?: any,
   textScale: string,
+  style: string,
   input?: any,
   handleSubmit?: () => void,
   handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -26,10 +27,12 @@ export type InputPartProps = {
   handleInputChange?: any,
   status?: any,
   stop?: any,
+  style: string
 }
 
 export type QuoteProps = {
   textScale: string;
+  style: string;
   quote: string;
   author: string;
   source: string;
@@ -43,6 +46,7 @@ export type WeatherProps = {
 
 export type FaqCarouselProps = {
   textScale: string;
+  style: string;
   input?: any;
   handleSubmit?: () => void;
   handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -50,6 +54,7 @@ export type FaqCarouselProps = {
 
 export type FaqProps = {
   textScale: string;
+  style: string;
   question: string;
   input?: any;
   handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;

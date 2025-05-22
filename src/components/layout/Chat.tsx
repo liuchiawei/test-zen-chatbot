@@ -9,7 +9,7 @@ import Cover from '@/components/common/Cover';
 import MessageTitle from '@/components/common/MessageTitle';
 import { useIsMobile } from '@/lib/isMobile';
 
-export default function Chat({ textScale }: { textScale: string }) {
+export default function Chat({ textScale, style }: { textScale: string, style: string }) {
   const { messages, setMessages, status, input, stop, reload, handleInputChange, handleSubmit, error } = useChat();
   // ページが開いた判断変数
   const [isMounted, setIsMounted] = useState(false);
@@ -46,8 +46,11 @@ export default function Chat({ textScale }: { textScale: string }) {
   return (
     <div className="flex flex-col-reverse md:flex-row justify-center items-center md:items-start w-full max-w-5xl 2xl:max-w-7xl h-full min-h-screen mx-auto mt-6 px-4 pb-8 transition-all">
       <motion.div
-        className={`block flex flex-col w-full h-full relative bg-stone-100 dark:bg-stone-900 z-10 shadow-md  transition-all
+        className={`block flex flex-col w-full h-full relative z-10 shadow-md border transition-all
           ${isChatOpen ? '' : 'md:hidden'}
+          ${style === 'default'
+          ? 'bg-stone-100 dark:bg-stone-900'
+          : 'bg-transparent rounded-xl border-white/50 backdrop-blur-sm backdrop-brightness-80 overflow-hidden **:text-stone-50'}
         `}
         initial={{ opacity: 0, x: 100 }}
         animate={{ opacity: 1, x: 0 }}
@@ -67,14 +70,15 @@ export default function Chat({ textScale }: { textScale: string }) {
           handleDelete={handleDelete}
           reload={reload}
           textScale={textScale}
+          style={style}
           input={input}
           handleSubmit={handleSubmit}
           handleInputChange={handleInputChange}
         />
         {/* ユーザー入力フォーム */}
-        <InputPart handleSubmit={handleSubmit} input={input} handleInputChange={handleInputChange} status={status} stop={stop} />
+        <InputPart handleSubmit={handleSubmit} input={input} handleInputChange={handleInputChange} status={status} stop={stop} style={style} />
         {/* 表紙を開くボタン */}
-        { !isMobile && !isCoverOpen && (
+        { style === 'default' && !isMobile && !isCoverOpen && (
           <motion.div>
             <motion.button
               title='表紙を開く'

@@ -3,7 +3,7 @@ import content from '@/data/content.json';
 
 export default function MessageTitle({ className }: { className?: string }) {
   return (
-    <div className={cn('p-8 border border-b-0', className)}>
+    <div className={cn('p-8', className)}>
       <h1 className='text-xl text-center font-bold tracking-widest'>
         {content.chat.title}
       </h1>
