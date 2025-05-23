@@ -3,13 +3,17 @@
 import { motion } from "motion/react";
 import { QuoteProps } from "@/lib/props";
 
-export const QuotationReply = ({ textScale, quote, author, source }: QuoteProps) => {
+export const QuotationReply = ({ textScale, quote, author, source, handleSourceOpen, handleCoverOpen }: QuoteProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={`relative flex flex-col w-full p-6 mb-4 bg-linear-to-b from-stone-50/50 to-stone-200/70 dark:from-stone-700/50 dark:to-stone-800/50 rounded-lg shadow-md overflow-hidden
+      onClick={() => {
+        handleSourceOpen();
+        handleCoverOpen();
+      }}
+      className={`relative flex flex-col w-full p-6 mb-4 bg-linear-to-b from-stone-50/50 to-stone-200/70 dark:from-stone-700/50 dark:to-stone-800/50 rounded-lg shadow-md overflow-hidden cursor-pointer
         ${textScale === 'md'
           ? 'gap-2'
           : 'gap-4'
