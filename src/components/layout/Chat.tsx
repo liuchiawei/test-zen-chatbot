@@ -92,6 +92,7 @@ export default function Chat({ textScale }: { textScale: string }) {
           <motion.div>
             <motion.button
               title='表紙を開く'
+              // TODO: handle source open
               onClick={handleCoverOpen}
               className='hidden md:block absolute top-0 right-0 translate-x-full w-8 h-12 bg-accent shadow-md cursor-pointer'
               initial={{ opacity: 0 }}
