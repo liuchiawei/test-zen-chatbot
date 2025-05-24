@@ -5,8 +5,9 @@ import { useChat } from '@ai-sdk/react';
 import { AnimatePresence, motion } from 'motion/react';
 import MessagePart from '@/components/common/MessagePart';
 import InputPart from '@/components/common/InputPart';
-import Cover from '@/components/common/Cover';
 import MessageTitle from '@/components/common/MessageTitle';
+import Cover from '@/components/common/Cover';
+import SourcePart from '@/components/common/sourcePart';
 import { useIsMobile } from '@/lib/isMobile';
 
 export default function Chat({ textScale }: { textScale: string }) {
@@ -19,6 +20,8 @@ export default function Chat({ textScale }: { textScale: string }) {
   const [isCoverOpen, setIsCoverOpen] = useState(true);
   // チャットエリアを開く/閉じる判断変数
   const [isChatOpen, setIsChatOpen] = useState(false);
+  // 引用エリアを開く/閉じる判断変数
+  const [isSourceOpen, setIsSourceOpen] = useState(false);
 
   // ページが開いたら判断変数をtrueにする
   useEffect(() => {
@@ -29,9 +32,18 @@ export default function Chat({ textScale }: { textScale: string }) {
     return null;
   }
   
-  // 表紙を開く/閉じる
+  /**
+   * 表紙を開く/閉じる
+   */
   const handleCoverOpen = () => {
     if (!isMobile) setIsCoverOpen(!isCoverOpen);
+  }
+
+  /**
+   * 引用エリアを開く/閉じる
+   */
+  const handleSourceOpen = () => {
+    setIsSourceOpen(!isSourceOpen);
   }
 
   const handleEdit = (id: string) => {
@@ -70,6 +82,8 @@ export default function Chat({ textScale }: { textScale: string }) {
           input={input}
           handleSubmit={handleSubmit}
           handleInputChange={handleInputChange}
+          handleSourceOpen={handleSourceOpen}
+          handleCoverOpen={handleCoverOpen}
         />
         {/* ユーザー入力フォーム */}
         <InputPart handleSubmit={handleSubmit} input={input} handleInputChange={handleInputChange} status={status} stop={stop} />
@@ -78,6 +92,7 @@ export default function Chat({ textScale }: { textScale: string }) {
           <motion.div>
             <motion.button
               title='表紙を開く'
+              // TODO: handle source open
               onClick={handleCoverOpen}
               className='hidden md:block absolute top-0 right-0 translate-x-full w-8 h-12 bg-accent shadow-md cursor-pointer'
               initial={{ opacity: 0 }}
@@ -113,7 +128,12 @@ export default function Chat({ textScale }: { textScale: string }) {
                 : { duration: 0.3 },
               }}
             >
-              <Cover />
+              {isSourceOpen
+              ? (
+                <SourcePart />
+              ) : (
+                <Cover />
+              )}
             </motion.div>
           )}
         </AnimatePresence>

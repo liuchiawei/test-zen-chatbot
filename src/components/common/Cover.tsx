@@ -16,7 +16,7 @@ export default function Cover() {
             className="text-5xl font-bold tracking-widest text-stone-900"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ type: 'spring', duration: 0.3 }}
           >
             {content.header.title}
           </motion.h1>
@@ -24,16 +24,16 @@ export default function Cover() {
             className="text-lg text-accent"
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
+            transition={{ type: 'spring', duration: 0.3, delay: 0.1 }}
           >
             {content.header.title_eng}
           </motion.h3>
         </div>
         <motion.div
           className="row-start-5 row-span-4"
-          initial={{ opacity: 0, filter: 'blur(5px)', scale: 0.9 }}
+          initial={{ opacity: 0, filter: 'blur(5px)', scale: 0.95 }}
           animate={{ opacity: 1, filter: 'blur(0px)', scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
         >
           <AspectRatio ratio={16 / 9}>
             <Image src="/images/demo_1.jpg" alt="cover" fill />
