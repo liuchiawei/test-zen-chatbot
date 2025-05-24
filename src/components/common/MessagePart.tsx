@@ -27,7 +27,7 @@ export default function MessagePart({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   // メッセージが追加されたらメッセージの最下部にスクロール
   useEffect(() => {
-    if (messagesEndRef.current) {
+    if (messagesEndRef.current && status === 'ready') {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, status]);
@@ -81,6 +81,16 @@ export default function MessagePart({
                             </div>
                         );
                     }
+                    if (toolName === 'searchTool') {
+                      const { result } = toolInvocation;
+                      // TODO: add generative ui component
+                        return (
+                            <div key={toolCallId} className="p-4 border text-sm text-foreground/50 rounded-lg bg-background/70 hover:bg-background">
+                                <h1>searchTool has been called.</h1>
+                                <p>{JSON.stringify(result)}</p>
+                            </div>
+                        );
+                    }
                 }
 
                 return null;
@@ -93,7 +103,7 @@ export default function MessagePart({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className={`bg-background dark:bg-stone-800 rounded-lg text-stone-700 dark:text-stone-400 text-justify tracking-wide px-4 py-2 shadow-sm
+                  className={`bg-background dark:bg-stone-800 rounded-lg text-foreground/80 text-justify tracking-wide px-4 py-2 shadow-sm
                     ${textScale === 'md'
                       ? 'text-sm leading-6'
                       : 'text-2xl leading-10'
@@ -103,7 +113,7 @@ export default function MessagePart({
                 </motion.div>
               ) : (
                 // アシスタントの場合
-                <p className={`text-stone-700 dark:text-stone-400 text-justify tracking-wide
+                <p className={`text-foreground/90 text-justify tracking-wide
                   ${textScale === 'md'
                     ? 'text-sm leading-6'
                     : 'text-2xl leading-10'
