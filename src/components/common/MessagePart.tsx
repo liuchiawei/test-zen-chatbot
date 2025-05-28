@@ -9,6 +9,7 @@ import { MessagePartProps } from "@/lib/props";
 import content from '@/data/content.json';
 import LoadingThreeDotsJumping from '@/components/common/loading';
 import { UserMessageOpts, AssistantMessageOpts } from '@/components/common/messageOpts';
+import { Send } from 'lucide-react';
 
 export default function MessagePart({
   messages,
@@ -217,6 +218,7 @@ export default function MessagePart({
                         : 'py-2'}
                     `}
                   >
+                    {/* 編集フォーム */}
                     {editingMessageId === message.id ? (
                       <form onSubmit={(e) => { e.preventDefault(); handleEditSubmit(message.id); }} className="flex flex-col gap-2">
                         <textarea 
@@ -235,11 +237,12 @@ export default function MessagePart({
                           >
                             キャンセル
                           </button>
-                          <button 
+                          <button
+                            title='保存' 
                             type='submit'
                             className="cursor-pointer px-4 py-2 text-xs bg-accent text-white rounded-md hover:bg-accent/80"
                           >
-                            保存
+                            <Send className="size-4"/>
                           </button>
                         </div>
                       </form>
