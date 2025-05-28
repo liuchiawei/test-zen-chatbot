@@ -73,10 +73,10 @@ export default function MessagePart({
     try {
       await navigator.clipboard.writeText(content);
       setIsCopied(true);
-      // (1秒後に)コピー状態を解除
+      // (0.6秒後に)コピー状態を解除
       setTimeout(() => {
         setIsCopied(false);
-      }, 1000);
+      }, 600);
     } catch (err) {
       console.error('コピーに失敗しました:', err);
       // フォールバック: 古いブラウザ対応
@@ -89,16 +89,55 @@ export default function MessagePart({
     }
   }
 
-  // 音声再生ハンドラー
+  // 音声再生状態管理
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  // 音頻緩存管理
+  const audioCache = useRef<Map<string, HTMLAudioElement>>(new Map());
+
+  // 音頻再生ハンドラー
   const handleSpeak = async (content: string) => {
-    const audio = await fetch('/api/speech', {
-      method: 'POST',
-      body: JSON.stringify({ text: content }),
-    });
-    const audioBlob = await audio.blob();
-    const audioUrl = URL.createObjectURL(audioBlob);
-    const audioElement = new Audio(audioUrl);
-    audioElement.play();
+    // キャッシュから既存の音頻を確認
+    const cachedAudio = audioCache.current.get(content);
+    
+    if (cachedAudio) {
+      // 既存の音頻を再生
+      setIsSpeaking(true);
+      cachedAudio.currentTime = 0; // 最初から再生
+      cachedAudio.play();
+      
+      // 音頻再生終了時にisSpeakingをfalseにする
+      cachedAudio.onended = () => {
+        setIsSpeaking(false);
+      };
+      return;
+    }
+
+    try {
+      // 新しい音頻をAPIから取得
+      const audio = await fetch('/api/speech', {
+        method: 'POST',
+        body: JSON.stringify({ text: content }),
+      });
+      const audioBlob = await audio.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audioElement = new Audio(audioUrl);
+      
+      // キャッシュに保存
+      audioCache.current.set(content, audioElement);
+      
+      // 音頻を再生
+      setIsSpeaking(true);
+      audioElement.play();
+      
+      // 音頻再生終了時にisSpeakingをfalseにする
+      audioElement.onended = () => {
+        setIsSpeaking(false);
+      };
+    } catch (error) {
+      console.error('音頻生成に失敗しました:', error);
+      setIsSpeaking(false); // エラー時もfalseにする
+    }
   }
   
   // メッセージリストのレンダリングをメモ化してパフォーマンス最適化
@@ -163,7 +202,7 @@ export default function MessagePart({
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}
-                    className={`w-auto min-w-1/2 rounded-lg text-justify tracking-wide px-4 py-2 shadow-sm
+                    className={`rounded-lg text-justify tracking-wide px-4 shadow-sm
                       ${textScale === 'md'
                         ? 'text-sm leading-6'
                         : 'text-2xl leading-10'
@@ -173,6 +212,9 @@ export default function MessagePart({
                         ? 'bg-white dark:bg-stone-700 text-foreground/80'
                         : 'bg-background dark:bg-stone-800 text-foreground/80'
                       : 'bg-stone-100/20 text-stone-50'}
+                      ${editingMessageId === message.id
+                        ? 'min-w-1/2 py-4'
+                        : 'py-2'}
                     `}
                   >
                     {editingMessageId === message.id ? (
@@ -220,32 +262,33 @@ export default function MessagePart({
                   {message.content}
                 </p>
               )}
-                          {/* 生成中にはボタンセット呼び出しない */}
-            {/* ボタンセット */}
-            {(status === 'ready' || status !== 'streaming') && (
-              message.role === 'user'
-              ? (
-                <UserMessageOpts
-                  messageId={message.id}
-                  handleEdit={handleEdit}
-                  handleDelete={handleDelete}
-                  reload={reload}
-                  status={status}
-                  style={style}
-                  editingMessageId={editingMessageId}
-                />
-              ) : (
-                <AssistantMessageOpts
-                  messageId={message.id}
-                  status={status}
-                  style={style}
-                  isCopied={isCopied}
-                  handleCopy={handleCopy}
-                  handleSpeak={handleSpeak}
-                  messageContent={message.content}
-                />
-              )
-            )}
+              {/* 生成中にはボタンセット呼び出しない */}
+              {/* ボタンセット */}
+              {(status === 'ready' || status !== 'streaming') && (
+                message.role === 'user'
+                ? (
+                  <UserMessageOpts
+                    messageId={message.id}
+                    handleEdit={handleEdit}
+                    handleDelete={handleDelete}
+                    reload={reload}
+                    status={status}
+                    style={style}
+                    editingMessageId={editingMessageId}
+                  />
+                ) : (
+                  <AssistantMessageOpts
+                    messageId={message.id}
+                    status={status}
+                    style={style}
+                    isCopied={isCopied}
+                    handleCopy={handleCopy}
+                    handleSpeak={handleSpeak}
+                    isSpeaking={isSpeaking}
+                    messageContent={message.content}
+                  />
+                )
+              )}
             </div>
           </div>
         ))}

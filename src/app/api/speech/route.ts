@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     const result = await generateSpeech({
       model: openai.speech("tts-1"),
       text: text,
-      providerOptions: { openai: {} },
+      // providerOptions: { openai: { instructions: "Speak in a slow and steady tone" } },
     });
 
     // 音声データを返す

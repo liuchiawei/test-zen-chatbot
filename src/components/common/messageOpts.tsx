@@ -15,10 +15,10 @@ export function UserMessageOpts({ messageId, handleEdit, handleDelete, reload, s
               variant='ghost'
               onClick={() => handleEdit(messageId)}
               disabled={!(status === 'ready' || status === 'error')}
-              className={`block aspect-square w-fit cursor-pointer p-2
+              className={`block aspect-square w-fit cursor-pointer p-2 rounded-sm
               ${style === 'default'
-              ? 'rounded-sm brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
-              : 'rounded-lg hover:bg-stone-900/80'}`}
+              ? 'brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
+              : 'hover:bg-stone-900/80'}`}
             >
               <Pencil className='size-4' />
             </Button>
@@ -37,10 +37,10 @@ export function UserMessageOpts({ messageId, handleEdit, handleDelete, reload, s
               onClick={() => reload()}
               // 編集中には再生成不可
               disabled={!(status === 'ready' || status === 'error') || (editingMessageId === messageId)}
-              className={`block aspect-square w-fit cursor-pointer p-2
+              className={`block aspect-square w-fit cursor-pointer p-2 rounded-sm
               ${style === 'default'
-              ? 'rounded-sm brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
-              : 'rounded-lg hover:bg-stone-900/80'}`}
+              ? 'brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
+              : 'hover:bg-stone-900/80'}`}
       >
               <RotateCcw className='size-4' />
             </Button>
@@ -58,10 +58,10 @@ export function UserMessageOpts({ messageId, handleEdit, handleDelete, reload, s
               variant='ghost'
               onClick={() => handleDelete(messageId)}
               disabled={!(status === 'ready')}
-              className={`block aspect-square w-fit cursor-pointer p-2
+              className={`block aspect-square w-fit cursor-pointer p-2 rounded-sm
               ${style === 'default'
-              ? 'rounded-sm brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
-              : 'rounded-lg hover:bg-stone-900/80'}`}
+              ? 'brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
+              : 'hover:bg-stone-900/80'}`}
             >
               <Trash2 className='size-4' />
             </Button>
@@ -75,7 +75,7 @@ export function UserMessageOpts({ messageId, handleEdit, handleDelete, reload, s
   );
 }
 
-export function AssistantMessageOpts({ messageId, status, style, handleCopy, messageContent, isCopied, handleSpeak }: AssistantMessageOptsProps) {
+export function AssistantMessageOpts({ messageId, status, style, handleCopy, messageContent, isCopied, handleSpeak, isSpeaking }: AssistantMessageOptsProps) {
   return (
     <div className="flex mt-1 gap-1 opacity-40">
       {/* コピーボタン */}
@@ -86,10 +86,10 @@ export function AssistantMessageOpts({ messageId, status, style, handleCopy, mes
               variant='ghost'
               onClick={() => handleCopy(messageContent)}
               disabled={!(status === 'ready' || status === 'error')}
-              className={`block aspect-square w-fit cursor-pointer p-2
+              className={`block aspect-square w-fit cursor-pointer p-2 rounded-sm
               ${style === 'default'
-              ? 'rounded-sm brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
-              : 'rounded-lg hover:bg-stone-900/80'}`}
+              ? 'brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
+              : 'hover:bg-stone-900/80'}`}
             >
               {isCopied ? <Check className='size-4' /> : <Copy className='size-4' />}
             </Button>
@@ -107,10 +107,14 @@ export function AssistantMessageOpts({ messageId, status, style, handleCopy, mes
               variant='ghost'
               onClick={() => handleSpeak(messageContent)}
               disabled={!(status === 'ready' || status === 'error')}
-              className={`block aspect-square w-fit cursor-pointer p-2
+              className={`block aspect-square w-fit p-2 cursor-pointer rounded-sm
               ${style === 'default'
-              ? 'rounded-sm brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
-              : 'rounded-lg hover:bg-stone-900/80'}`}
+              ? isSpeaking
+                ? 'animate-pulse animate-duration-200 brightness-50 hover:brightness-100 bg-stone-100 dark:bg-stone-600 hover:bg-stone-300 dark:hover:bg-stone-600'
+                : 'brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
+              : isSpeaking
+                ? 'animate-pulse animate-duration-200 bg-stone-900/80 hover:bg-stone-900/80'
+                : 'hover:bg-stone-900/80'}`}
             >
               <Volume2 className='size-4' />
             </Button>
