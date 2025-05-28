@@ -2,7 +2,8 @@
 
 import { motion } from "motion/react";
 import { QuoteProps } from "@/lib/props";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import SourcePart from "@/components/common/sourcePart";
 
 export const QuotationReply = ({ textScale, style, data }: QuoteProps) => {
   return (
@@ -50,16 +51,7 @@ export const QuotationReply = ({ textScale, style, data }: QuoteProps) => {
           </div>
         </motion.div>
       </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>
-            勝利とは、最後まで屈しないことである。
-          </SheetTitle>
-        </SheetHeader>
-        <div>
-          contents here.
-        </div>
-      </SheetContent>
+      <SourcePart />
     </Sheet>
   )
 }
