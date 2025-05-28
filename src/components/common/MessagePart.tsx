@@ -20,13 +20,15 @@ export default function MessagePart({
   style,
   input,
   handleSubmit,
-  handleInputChange
+  handleInputChange,
+  handleSourceOpen,
+  handleCoverOpen
 }: MessagePartProps) {
   // メッセージの最下部を参照する
   const messagesEndRef = useRef<HTMLDivElement>(null);
   // メッセージが追加されたらメッセージの最下部にスクロール
   useEffect(() => {
-    if (messagesEndRef.current) {
+    if (messagesEndRef.current && status === 'ready') {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, status]);
@@ -76,7 +78,7 @@ export default function MessagePart({
                         const { result } = toolInvocation;
                         return (
                             <div key={toolCallId} className="mt-2 max-w-[85%] w-full flex justify-start">
-                                <QuotationReply textScale={textScale} style={style} {...result} />
+                                <QuotationReply textScale={textScale} style={style} {...result} handleSourceOpen={handleSourceOpen} handleCoverOpen={handleCoverOpen} />
                             </div>
                         );
                     }
@@ -92,13 +94,13 @@ export default function MessagePart({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className={`rounded-lg text-justify tracking-wide px-4 py-2 shadow-sm
+                  className={`bg-background dark:bg-stone-800 rounded-lg text-justify tracking-wide px-4 py-2 shadow-sm
                     ${textScale === 'md'
                       ? 'text-sm leading-6'
                       : 'text-2xl leading-10'
                     }
                     ${style === 'default'
-                    ? 'bg-background dark:bg-stone-800 text-stone-700 dark:text-stone-400'
+                    ? 'bg-background dark:bg-stone-800 text-foreground/80'
                     : 'bg-stone-100/20 text-stone-50'}
                     `}
                 >
@@ -112,7 +114,7 @@ export default function MessagePart({
                     : 'text-2xl leading-10'
                   }
                   ${style === 'default'
-                    ? 'text-stone-700 dark:text-stone-400'
+                    ? 'text-foreground/90 '
                     : 'text-stone-100'}
                   `}>
                   {message.content}

@@ -18,7 +18,9 @@ export type MessagePartProps = {
   style: string,
   input?: any,
   handleSubmit?: () => void,
-  handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
+  handleCoverOpen: () => void,
+  handleSourceOpen: () => void
 }
 
 export type InputPartProps = {
@@ -36,6 +38,8 @@ export type QuoteProps = {
   quote: string;
   author: string;
   source: string;
+  handleSourceOpen: () => void,
+  handleCoverOpen: () => void
 };
 
 export type WeatherProps = {
