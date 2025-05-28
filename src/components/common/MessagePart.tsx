@@ -69,16 +69,16 @@ export default function MessagePart({
               {message.role === 'assistant' && message.toolInvocations?.map(toolInvocation => {
                 const { toolName, toolCallId, state } = toolInvocation;
 
-                if (state !== 'result' && (toolName === 'replyWithQuotation')) {
+                if (state !== 'result') {
                   return <LoadingThreeDotsJumping key={toolCallId} />
                 }
                 
                 if (state === 'result') {
-                    if (toolName === 'replyWithQuotation') {
+                    if (toolName === 'searchTool') {
                         const { result } = toolInvocation;
                         return (
-                            <div key={toolCallId} className="mt-2 max-w-[85%] w-full flex justify-start">
-                                <QuotationReply textScale={textScale} style={style} {...result} handleSourceOpen={handleSourceOpen} handleCoverOpen={handleCoverOpen} />
+                            <div key={toolCallId} className="mt-2 max-w-[85%] w-full flex flex-col justify-start">
+                              <QuotationReply textScale={textScale} style={style} data={result.data} handleSourceOpen={handleSourceOpen} handleCoverOpen={handleCoverOpen} />
                             </div>
                         );
                     }

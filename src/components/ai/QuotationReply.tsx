@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import { QuoteProps } from "@/lib/props";
 
-export const QuotationReply = ({ textScale, style, quote, author, source, handleSourceOpen, handleCoverOpen }: QuoteProps) => {
+export const QuotationReply = ({ textScale, style, data, handleSourceOpen, handleCoverOpen }: QuoteProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -31,21 +31,23 @@ export const QuotationReply = ({ textScale, style, quote, author, source, handle
           ? 'before:text-stone-400/50 dark:before:text-stone-700/50'
           : 'before:text-stone-100/20'}
         `}
-      >{quote}</h3>
+      >{data.answer}</h3>
       <div className="self-end flex justify-center items-center gap-2">
         {/* TODO: Link to source */}
+        {/* 引用ソース */}
         <p className=
           {`${textScale === 'md'
             ? 'text-sm'
             : 'text-xl'
           }`}
-        >『 {source} 』</p>
+        >『 {data.conversation_id} 』</p>
+        {/* 作者 */}
         <p className={`font-bold
           ${textScale === 'md'
             ? 'text-sm'
             : 'text-xl'
           }`}
-        >{author}</p>
+        >{data.conversation_id}</p>
       </div>
     </motion.div>
   )

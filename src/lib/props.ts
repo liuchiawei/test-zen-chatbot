@@ -35,11 +35,12 @@ export type InputPartProps = {
 export type QuoteProps = {
   textScale: string;
   style: string;
-  quote: string;
-  author: string;
-  source: string;
-  handleSourceOpen: () => void,
-  handleCoverOpen: () => void
+  data: {
+    conversation_id: string;
+    answer: string;
+  };
+  handleSourceOpen: () => void;
+  handleCoverOpen: () => void;
 };
 
 export type WeatherProps = {
