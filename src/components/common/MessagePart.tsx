@@ -17,6 +17,7 @@ export default function MessagePart({
   handleDelete,
   reload,
   textScale,
+  style,
   input,
   handleSubmit,
   handleInputChange,
@@ -68,26 +69,16 @@ export default function MessagePart({
               {message.role === 'assistant' && message.toolInvocations?.map(toolInvocation => {
                 const { toolName, toolCallId, state } = toolInvocation;
 
-                if (state !== 'result' && (toolName === 'replyWithQuotation')) {
+                if (state !== 'result') {
                   return <LoadingThreeDotsJumping key={toolCallId} />
                 }
                 
                 if (state === 'result') {
-                    if (toolName === 'replyWithQuotation') {
+                    if (toolName === 'searchTool') {
                         const { result } = toolInvocation;
                         return (
-                            <div key={toolCallId} className="mt-2 max-w-[85%] w-full flex justify-start">
-                                <QuotationReply textScale={textScale} {...result} handleSourceOpen={handleSourceOpen} handleCoverOpen={handleCoverOpen} />
-                            </div>
-                        );
-                    }
-                    if (toolName === 'searchTool') {
-                      const { result } = toolInvocation;
-                      // TODO: add generative ui component
-                        return (
-                            <div key={toolCallId} className="p-4 border text-sm text-foreground/50 rounded-lg bg-background/70 hover:bg-background">
-                                <h1>searchTool has been called.</h1>
-                                <p>{JSON.stringify(result)}</p>
+                            <div key={toolCallId} className="mt-2 max-w-[85%] w-full flex flex-col justify-start">
+                              <QuotationReply textScale={textScale} style={style} data={result.data} handleSourceOpen={handleSourceOpen} handleCoverOpen={handleCoverOpen} />
                             </div>
                         );
                     }
@@ -103,21 +94,29 @@ export default function MessagePart({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className={`bg-background dark:bg-stone-800 rounded-lg text-foreground/80 text-justify tracking-wide px-4 py-2 shadow-sm
+                  className={`bg-background dark:bg-stone-800 rounded-lg text-justify tracking-wide px-4 py-2 shadow-sm
                     ${textScale === 'md'
                       ? 'text-sm leading-6'
                       : 'text-2xl leading-10'
-                    }`}
+                    }
+                    ${style === 'default'
+                    ? 'bg-background dark:bg-stone-800 text-foreground/80'
+                    : 'bg-stone-100/20 text-stone-50'}
+                    `}
                 >
                   {message.content}
                 </motion.div>
               ) : (
                 // アシスタントの場合
-                <p className={`text-foreground/90 text-justify tracking-wide
+                <p className={`text-justify tracking-wide
                   ${textScale === 'md'
                     ? 'text-sm leading-6'
                     : 'text-2xl leading-10'
-                  }`}>
+                  }
+                  ${style === 'default'
+                    ? 'text-foreground/90 '
+                    : 'text-stone-100'}
+                  `}>
                   {message.content}
                 </p>
               )}
@@ -131,7 +130,10 @@ export default function MessagePart({
                     type='button'
                     onClick={() => handleEdit(message.id)}
                     disabled={!(status === 'ready' || status === 'error')}
-                    className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-stone-500 p-2 rounded-full"
+                    className={`block aspect-square w-fit cursor-pointer p-2
+                    ${style === 'default'
+                    ? 'rounded-full brightness-50 hover:brightness-100 hover:bg-stone-500'
+                    : 'rounded-lg hover:bg-stone-900/80'}`}
                   >
                     <Pencil className='size-4' />
                   </button>
@@ -142,7 +144,10 @@ export default function MessagePart({
                     type='button'
                     onClick={() => reload()}
                     disabled={!(status === 'ready' || status === 'error')}
-                    className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-stone-500 p-2 rounded-full"
+                    className={`block aspect-square w-fit cursor-pointer p-2
+                    ${style === 'default'
+                    ? 'rounded-full brightness-50 hover:brightness-100 hover:bg-stone-500'
+                    : 'rounded-lg hover:bg-stone-900/80'}`}
                   >
                     <RotateCcw className='size-4' />
                   </button>
@@ -153,7 +158,10 @@ export default function MessagePart({
                     type='button'
                     onClick={() => handleDelete(message.id)}
                     disabled={!(status === 'ready')}
-                    className="block aspect-square w-fit cursor-pointer brightness-50 hover:brightness-100 hover:bg-stone-500 p-2 rounded-full"
+                    className={`block aspect-square w-fit cursor-pointer p-2
+                    ${style === 'default'
+                    ? 'rounded-full brightness-50 hover:brightness-100 hover:bg-stone-500'
+                    : 'rounded-lg hover:bg-stone-900/80'}`}
                   >
                     <Trash2 className='size-4' />
                   </button>
@@ -170,18 +178,23 @@ export default function MessagePart({
   }, [messages, status, error, textScale, handleEdit, handleDelete, reload]);
 
   return (
-    <div className='flex flex-col border w-full h-full text-justify pb-4 overflow-hidden'>
+    <div className='flex flex-col border-t border-b w-full h-full text-justify pb-4 overflow-hidden'>
         {messages && messages.length === 0 ? (
           <div className='px-18'>
-            <h1 className={`my-6 text-xl text-stone-500
+            <h1 className={`my-6 text-xl
               ${textScale === 'md'
               ? 'text-sm'
-              : 'text-2xl'}`}
+              : 'text-2xl'}
+              ${style === 'default'
+              ? 'text-stone-700 dark:text-stone-400'
+              : 'text-stone-300'}
+              `}
             >
               {content.chat.defaultContent}
             </h1>
             <FaqCarousel
               textScale={textScale}
+              style={style}
               input={input}
               handleSubmit={handleSubmit}
               handleInputChange={handleInputChange}

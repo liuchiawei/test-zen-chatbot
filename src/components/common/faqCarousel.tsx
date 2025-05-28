@@ -8,7 +8,7 @@ import {
 import { FaqCarouselProps } from "@/lib/props";
 import content from '@/data/content.json';
 
-export default function FaqCarousel({ textScale, input, handleSubmit, handleInputChange }: FaqCarouselProps) {
+export default function FaqCarousel({ textScale, style, input, handleSubmit, handleInputChange }: FaqCarouselProps) {
   return (
     <Carousel className="w-full max-w-lm">
       <CarouselContent className="-ml-1 cursor-grab active:cursor-grabbing  ">
@@ -16,6 +16,7 @@ export default function FaqCarousel({ textScale, input, handleSubmit, handleInpu
           <Faq
             key={index}
             textScale={textScale}
+            style={style}
             question={question}
             input={input}
             handleSubmit={handleSubmit}

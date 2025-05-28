@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Send, Pause } from "lucide-react";
 import content from '@/data/content.json';
 
-export default function InputPart({ handleSubmit, input, handleInputChange, status, stop }: InputPartProps) {
+export default function InputPart({ handleSubmit, input, handleInputChange, status, stop, style }: InputPartProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className='flex items-center justify-center w-full h-18 border-r border-l border-b'
+      className='flex items-center justify-center w-full h-18'
     >
       <Input
         title={content.chat.input.title}
@@ -18,7 +18,11 @@ export default function InputPart({ handleSubmit, input, handleInputChange, stat
         placeholder={content.chat.input.placeholder}
         value={input}
         onChange={handleInputChange}
-        className='px-4 w-full h-full rounded-none'
+        className={`px-4 w-full h-full rounded-none
+        ${style === 'default'
+        ? ''
+        : 'text-stone-100 placeholder:text-stone-300'}
+        `}
       />
       <div className='h-full flex items-center justify-center'>
         {/* submit button */}
@@ -26,7 +30,11 @@ export default function InputPart({ handleSubmit, input, handleInputChange, stat
           <Button
             title={content.chat.input.submit}
             type="submit"
-            className='h-full aspect-square rounded-none cursor-pointer'
+            className={`h-full aspect-square rounded-none cursor-pointer
+            ${style === 'default'
+            ? ''
+            : 'bg-stone-900/50 hover:bg-stone-950 text-stone-100'}
+            `}
           >
             <Send className='size-4' />
           </Button>
@@ -36,7 +44,11 @@ export default function InputPart({ handleSubmit, input, handleInputChange, stat
           <Button
             title={content.chat.input.stop}
             type="reset"
-            className='h-full aspect-square rounded-none cursor-pointer'
+            className={`h-full aspect-square rounded-none cursor-pointer
+            ${style === 'default'
+            ? ''
+            : 'bg-stone-900/50 hover:bg-stone-950 text-stone-100'}
+            `}
             onClick={stop}
             disabled={!(status === 'streaming' || status === 'submitted')}
           >

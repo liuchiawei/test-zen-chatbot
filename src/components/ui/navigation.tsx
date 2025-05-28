@@ -2,7 +2,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import NavOptionBar from '@/components/layout/NavOpionBar';
 import content from '@/data/content.json';
 
-export default function Nav({ textScale, onTextScaleChange }: { textScale: string, onTextScaleChange: (scale: string) => void }) {
+export default function Nav({ textScale, onTextScaleChange, style, onStyleChange }: { textScale: string, onTextScaleChange: (scale: string) => void, style: string, onStyleChange: (style: string) => void }) {
   return (
     <nav className='flex items-center justify-between w-full px-4'>
       <SidebarTrigger className='rounded-full hover:text-white' tooltipText={content.tooltip.sidebarOn}/>
@@ -11,7 +11,7 @@ export default function Nav({ textScale, onTextScaleChange }: { textScale: strin
           {content.navigation.title}
         </h1>
       </div>
-      <NavOptionBar textScale={textScale} onTextScaleChange={onTextScaleChange} />
+      <NavOptionBar textScale={textScale} onTextScaleChange={onTextScaleChange} style={style} onStyleChange={onStyleChange} />
     </nav>
   );
 }
