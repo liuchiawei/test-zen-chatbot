@@ -46,11 +46,6 @@ export default function Chat({ textScale, style }: { textScale: string, style: s
     setIsSourceOpen(!isSourceOpen);
   }
 
-  const handleEdit = (id: string) => {
-    setMessages(messages.map(message => message.id === id ? { ...message, content: input } : message));
-    reload();
-  }
-
   const handleDelete = (id: string) => {
     setMessages(messages.filter(message => message.id !== id))
   }
@@ -78,7 +73,6 @@ export default function Chat({ textScale, style }: { textScale: string, style: s
           messages={messages}
           error={error}
           status={status}
-          handleEdit={handleEdit}
           handleDelete={handleDelete}
           reload={reload}
           textScale={textScale}

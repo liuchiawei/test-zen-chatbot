@@ -1,19 +1,19 @@
 'use client';
 
-import { useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion } from 'motion/react';
-import { Pencil, RotateCcw, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import FaqCarousel from '@/components/common/faqCarousel';
 import { QuotationReply } from '@/components/ai/QuotationReply';
 import { MessagePartProps } from "@/lib/props";
 import content from '@/data/content.json';
 import LoadingThreeDotsJumping from '@/components/common/loading';
+import { UserMessageOpts, AssistantMessageOpts } from '@/components/common/messageOpts';
+
 export default function MessagePart({
   messages,
   error,
   status,
-  handleEdit,
   handleDelete,
   reload,
   textScale,
@@ -32,6 +32,61 @@ export default function MessagePart({
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, status]);
+
+  // 編集状態管理
+  const [editingMessageId, setEditingMessageId] = useState<string>('');
+  const [editingContent, setEditingContent] = useState<string>('');
+
+  // 編集開始ハンドラー
+  const handleEdit = (messageId: string) => {
+    if (!messages) return;
+    const message = messages.find(m => m.id === messageId);
+    if (message) {
+      setEditingMessageId(messageId);
+      setEditingContent(message.content);
+    }
+  }
+
+  // 編集内容変更ハンドラー
+  const handleEditChange = (value: string) => {
+    setEditingContent(value);
+  }
+
+  // 編集送信ハンドラー
+  const handleEditSubmit = (messageId: string) => {
+    setEditingMessageId('');
+    setEditingContent('');
+    reload();
+  }
+
+  // 編集キャンセルハンドラー
+  const handleEditCancel = () => {
+    setEditingMessageId('');
+    setEditingContent('');
+  }
+  // コピー状態管理
+  const [isCopied, setIsCopied] = useState(false);
+
+  // コピーハンドラー
+  const handleCopy = async (content: string) => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setIsCopied(true);
+      // (1秒後に)コピー状態を解除
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 1000);
+    } catch (err) {
+      console.error('コピーに失敗しました:', err);
+      // フォールバック: 古いブラウザ対応
+      const textArea = document.createElement('textarea');
+      textArea.value = content;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+    }
+  }
 
   // メッセージリストのレンダリングをメモ化してパフォーマンス最適化
   const renderedMessages = useMemo(() => {
@@ -90,22 +145,54 @@ export default function MessagePart({
               {/* チャット内容 */}
               {message.role === 'user' ? (
                 // ユーザーの場合
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className={`bg-background dark:bg-stone-800 rounded-lg text-justify tracking-wide px-4 py-2 shadow-sm
-                    ${textScale === 'md'
-                      ? 'text-sm leading-6'
-                      : 'text-2xl leading-10'
-                    }
-                    ${style === 'default'
-                    ? 'bg-background dark:bg-stone-800 text-foreground/80'
-                    : 'bg-stone-100/20 text-stone-50'}
+                <>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className={`w-auto min-w-1/2 rounded-lg text-justify tracking-wide px-4 py-2 shadow-sm
+                      ${textScale === 'md'
+                        ? 'text-sm leading-6'
+                        : 'text-2xl leading-10'
+                      }
+                      ${style === 'default'
+                      ? editingMessageId === message.id
+                        ? 'bg-white dark:bg-stone-700 text-foreground/80'
+                        : 'bg-background dark:bg-stone-800 text-foreground/80'
+                      : 'bg-stone-100/20 text-stone-50'}
                     `}
-                >
-                  {message.content}
-                </motion.div>
+                  >
+                    {editingMessageId === message.id ? (
+                      <form onSubmit={(e) => { e.preventDefault(); handleEditSubmit(message.id); }} className="flex flex-col gap-2">
+                        <textarea 
+                          title='edit message' 
+                          value={editingContent} 
+                          onChange={(e) => handleEditChange(e.target.value)}
+                          placeholder={message.content}
+                          className="bg-transparent outline-none resize-none"
+                          autoFocus
+                        />
+                        <div className="flex gap-2 justify-end">
+                          <button 
+                            type='button'
+                            onClick={handleEditCancel}
+                            className="cursor-pointer px-4 py-2 text-xs bg-stone-200 dark:bg-stone-600 rounded-md hover:bg-stone-300 dark:hover:bg-stone-600/70"
+                          >
+                            キャンセル
+                          </button>
+                          <button 
+                            type='submit'
+                            className="cursor-pointer px-4 py-2 text-xs bg-accent text-white rounded-md hover:bg-accent/80"
+                          >
+                            保存
+                          </button>
+                        </div>
+                      </form>
+                    ) : (
+                      message.content
+                    )}
+                  </motion.div>
+                </>
               ) : (
                 // アシスタントの場合
                 <p className={`text-justify tracking-wide
@@ -120,59 +207,36 @@ export default function MessagePart({
                   {message.content}
                 </p>
               )}
-
-              {/* ボタンセット */}
-              {status === 'ready' || status !== 'streaming' ? (
-                <div className="flex mt-1 opacity-40">
-                  {/* 編集ボタン */}
-                  <button
-                    title='Edit'
-                    type='button'
-                    onClick={() => handleEdit(message.id)}
-                    disabled={!(status === 'ready' || status === 'error')}
-                    className={`block aspect-square w-fit cursor-pointer p-2
-                    ${style === 'default'
-                    ? 'rounded-full brightness-50 hover:brightness-100 hover:bg-stone-500'
-                    : 'rounded-lg hover:bg-stone-900/80'}`}
-                  >
-                    <Pencil className='size-4' />
-                  </button>
-
-                  {/* 再生成ボタン */}
-                  <button
-                    title='Regenerate'
-                    type='button'
-                    onClick={() => reload()}
-                    disabled={!(status === 'ready' || status === 'error')}
-                    className={`block aspect-square w-fit cursor-pointer p-2
-                    ${style === 'default'
-                    ? 'rounded-full brightness-50 hover:brightness-100 hover:bg-stone-500'
-                    : 'rounded-lg hover:bg-stone-900/80'}`}
-                  >
-                    <RotateCcw className='size-4' />
-                  </button>
-
-                  {/* 削除ボタン */}
-                  <button
-                    title='Delete'
-                    type='button'
-                    onClick={() => handleDelete(message.id)}
-                    disabled={!(status === 'ready')}
-                    className={`block aspect-square w-fit cursor-pointer p-2
-                    ${style === 'default'
-                    ? 'rounded-full brightness-50 hover:brightness-100 hover:bg-stone-500'
-                    : 'rounded-lg hover:bg-stone-900/80'}`}
-                  >
-                    <Trash2 className='size-4' />
-                  </button>
-
-                </div>
-              ) : null}
+                          {/* 生成中にはボタンセット呼び出しない */}
+            {/* ボタンセット */}
+            {(status === 'ready' || status !== 'streaming') && (
+              message.role === 'user'
+              ? (
+                <UserMessageOpts
+                  messageId={message.id}
+                  handleEdit={handleEdit}
+                  handleDelete={handleDelete}
+                  reload={reload}
+                  status={status}
+                  style={style}
+                  editingMessageId={editingMessageId}
+                />
+              ) : (
+                <AssistantMessageOpts
+                  messageId={message.id}
+                  status={status}
+                  style={style}
+                  isCopied={isCopied}
+                  handleCopy={handleCopy}
+                  messageContent={message.content}
+                />
+              )
+            )}
             </div>
           </div>
         ))}
-
         {status === 'submitted' && <LoadingThreeDotsJumping />}
+        
       </>
     );
   }, [messages, status, error, textScale, handleEdit, handleDelete, reload]);
