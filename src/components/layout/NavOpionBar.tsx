@@ -1,7 +1,8 @@
-import ThemeToggle from "../common/ThemeToggle";
-import AvatarButton from "../common/AvatarButton";
-import TextScaleButton from "../common/TextScaleButton";
-import StyleChangeButton from "../common/styleChangeButton";
+import ThemeToggle from "@/components/common/ThemeToggle";
+import AvatarButton from "@/components/common/AvatarButton";
+import TextScaleButton from "@/components/common/TextScaleButton";
+import StyleChangeButton from "@/components/common/styleChangeButton";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 export default function NavOptionBar({ textScale, onTextScaleChange, style, onStyleChange }: { textScale: string, onTextScaleChange: (scale: string) => void, style: string, onStyleChange: (style: string) => void }) {
   return (
@@ -9,7 +10,17 @@ export default function NavOptionBar({ textScale, onTextScaleChange, style, onSt
       <StyleChangeButton style={style} onStyleChange={onStyleChange} className='rounded-full hover:text-white' />
       <TextScaleButton textScale={textScale} onTextScaleChange={onTextScaleChange} className='rounded-full hover:text-white' />
       <ThemeToggle className='rounded-full hover:text-white' />
-      <AvatarButton className='rounded-full' />
+      <Sheet>
+        <SheetTrigger>
+          <AvatarButton className='rounded-full' />
+        </SheetTrigger>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>My Page</SheetTitle>
+          </SheetHeader>
+          <AvatarButton className='rounded-full' />
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
