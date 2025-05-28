@@ -38,10 +38,10 @@ export function UserMessageOpts({ messageId, handleEdit, handleDelete, reload, s
               onClick={() => reload()}
               // 編集中には再生成不可
               disabled={!(status === 'ready' || status === 'error') || (editingMessageId === messageId)}
-        className={`block aspect-square w-fit cursor-pointer p-2
-        ${style === 'default'
-        ? 'rounded-sm brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
-        : 'rounded-lg hover:bg-stone-900/80'}`}
+              className={`block aspect-square w-fit cursor-pointer p-2
+              ${style === 'default'
+              ? 'rounded-sm brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
+              : 'rounded-lg hover:bg-stone-900/80'}`}
       >
               <RotateCcw className='size-4' />
             </button>
@@ -77,7 +77,7 @@ export function UserMessageOpts({ messageId, handleEdit, handleDelete, reload, s
   );
 }
 
-export function AssistantMessageOpts({ messageId, status, style, handleCopy, messageContent, isCopied }: AssistantMessageOptsProps) {
+export function AssistantMessageOpts({ messageId, status, style, handleCopy, messageContent, isCopied, handleSpeak }: AssistantMessageOptsProps) {
   return (
     <div className="flex mt-1 opacity-40">
       {/* コピーボタン */}
@@ -109,7 +109,7 @@ export function AssistantMessageOpts({ messageId, status, style, handleCopy, mes
             <button
               title={content.messageOption.speak}
               type='button'
-              // onClick={() => reload()}
+              onClick={() => handleSpeak(messageContent)}
               disabled={!(status === 'ready' || status === 'error')}
               className={`block aspect-square w-fit cursor-pointer p-2
               ${style === 'default'

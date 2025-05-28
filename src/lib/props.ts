@@ -81,5 +81,6 @@ export type AssistantMessageOptsProps = {
   style: string;
   isCopied: boolean;
   handleCopy: (content: string) => void;
+  handleSpeak: (content: string) => void;
   messageContent: string;
 };

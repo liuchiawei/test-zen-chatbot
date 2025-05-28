@@ -64,6 +64,7 @@ export default function MessagePart({
     setEditingMessageId('');
     setEditingContent('');
   }
+
   // コピー状態管理
   const [isCopied, setIsCopied] = useState(false);
 
@@ -88,6 +89,18 @@ export default function MessagePart({
     }
   }
 
+  // 音声再生ハンドラー
+  const handleSpeak = async (content: string) => {
+    const audio = await fetch('/api/speech', {
+      method: 'POST',
+      body: JSON.stringify({ text: content }),
+    });
+    const audioBlob = await audio.blob();
+    const audioUrl = URL.createObjectURL(audioBlob);
+    const audioElement = new Audio(audioUrl);
+    audioElement.play();
+  }
+  
   // メッセージリストのレンダリングをメモ化してパフォーマンス最適化
   const renderedMessages = useMemo(() => {
     if (!messages || messages.length === 0) return null;
@@ -228,6 +241,7 @@ export default function MessagePart({
                   style={style}
                   isCopied={isCopied}
                   handleCopy={handleCopy}
+                  handleSpeak={handleSpeak}
                   messageContent={message.content}
                 />
               )
