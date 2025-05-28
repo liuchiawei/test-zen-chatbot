@@ -20,8 +20,6 @@ export default function Chat({ textScale, style }: { textScale: string, style: s
   const [isCoverOpen, setIsCoverOpen] = useState(true);
   // チャットエリアを開く/閉じる判断変数
   const [isChatOpen, setIsChatOpen] = useState(false);
-  // 引用エリアを開く/閉じる判断変数
-  const [isSourceOpen, setIsSourceOpen] = useState(false);
 
   // ページが開いたら判断変数をtrueにする
   useEffect(() => {
@@ -37,13 +35,6 @@ export default function Chat({ textScale, style }: { textScale: string, style: s
    */
   const handleCoverOpen = () => {
     if (!isMobile) setIsCoverOpen(!isCoverOpen);
-  }
-
-  /**
-   * 引用エリアを開く/閉じる
-   */
-  const handleSourceOpen = () => {
-    setIsSourceOpen(!isSourceOpen);
   }
 
   const handleDelete = (id: string) => {
@@ -80,8 +71,6 @@ export default function Chat({ textScale, style }: { textScale: string, style: s
           input={input}
           handleSubmit={handleSubmit}
           handleInputChange={handleInputChange}
-          handleSourceOpen={handleSourceOpen}
-          handleCoverOpen={handleCoverOpen}
         />
         {/* ユーザー入力フォーム */}
         <InputPart handleSubmit={handleSubmit} input={input} handleInputChange={handleInputChange} status={status} stop={stop} style={style} />
@@ -126,12 +115,7 @@ export default function Chat({ textScale, style }: { textScale: string, style: s
                 : { duration: 0.3 },
               }}
             >
-              {isSourceOpen
-              ? (
-                <SourcePart />
-              ) : (
-                <Cover />
-              )}
+              <Cover />
             </motion.div>
           )}
         </AnimatePresence>

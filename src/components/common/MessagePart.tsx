@@ -9,6 +9,7 @@ import { MessagePartProps } from "@/lib/props";
 import content from '@/data/content.json';
 import LoadingThreeDotsJumping from '@/components/common/loading';
 import { UserMessageOpts, AssistantMessageOpts } from '@/components/common/messageOpts';
+import { Send } from 'lucide-react';
 
 export default function MessagePart({
   messages,
@@ -21,8 +22,6 @@ export default function MessagePart({
   input,
   handleSubmit,
   handleInputChange,
-  handleSourceOpen,
-  handleCoverOpen
 }: MessagePartProps) {
   // メッセージの最下部を参照する
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -185,7 +184,7 @@ export default function MessagePart({
                         const { result } = toolInvocation;
                         return (
                             <div key={toolCallId} className="mt-2 max-w-[85%] w-full flex flex-col justify-start">
-                              <QuotationReply textScale={textScale} style={style} data={result.data} handleSourceOpen={handleSourceOpen} handleCoverOpen={handleCoverOpen} />
+                              <QuotationReply textScale={textScale} style={style} data={result.data} />
                             </div>
                         );
                     }
@@ -217,6 +216,7 @@ export default function MessagePart({
                         : 'py-2'}
                     `}
                   >
+                    {/* 編集フォーム */}
                     {editingMessageId === message.id ? (
                       <form onSubmit={(e) => { e.preventDefault(); handleEditSubmit(message.id); }} className="flex flex-col gap-2">
                         <textarea 
@@ -235,11 +235,12 @@ export default function MessagePart({
                           >
                             キャンセル
                           </button>
-                          <button 
+                          <button
+                            title='保存' 
                             type='submit'
                             className="cursor-pointer px-4 py-2 text-xs bg-accent text-white rounded-md hover:bg-accent/80"
                           >
-                            保存
+                            <Send className="size-4"/>
                           </button>
                         </div>
                       </form>
