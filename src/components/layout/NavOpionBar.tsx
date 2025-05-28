@@ -7,18 +7,18 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 export default function NavOptionBar({ textScale, onTextScaleChange, style, onStyleChange }: { textScale: string, onTextScaleChange: (scale: string) => void, style: string, onStyleChange: (style: string) => void }) {
   return (
     <div className='flex items-center justify-between gap-1 md:gap-2'>
-      <StyleChangeButton style={style} onStyleChange={onStyleChange} className='rounded-full hover:text-white' />
-      <TextScaleButton textScale={textScale} onTextScaleChange={onTextScaleChange} className='rounded-full hover:text-white' />
-      <ThemeToggle className='rounded-full hover:text-white' />
+      <StyleChangeButton style={style} onStyleChange={onStyleChange} className='rounded hover:text-white' />
+      <TextScaleButton textScale={textScale} onTextScaleChange={onTextScaleChange} className='rounded hover:text-white' />
+      <ThemeToggle className='rounded hover:text-white' />
       <Sheet>
         <SheetTrigger>
-          <AvatarButton className='rounded-full' />
+          <AvatarButton className='rounded' />
         </SheetTrigger>
         <SheetContent>
           <SheetHeader>
             <SheetTitle>My Page</SheetTitle>
           </SheetHeader>
-          <AvatarButton className='rounded-full' />
+          <AvatarButton className='rounded' />
         </SheetContent>
       </Sheet>
     </div>

@@ -9,7 +9,7 @@ export default function StyleChangeButton({ style, onStyleChange, className }: {
     onStyleChange(nextStyle);
   };
 
-  return <Button title="change style" variant="ghost" className={cn("cursor-pointer", className)} onClick={handleStyleChange}>
+  return <Button title="change style" variant="ghost" className={cn(className)} onClick={handleStyleChange}>
     <TreePine className="size-4" />
   </Button>
 }
