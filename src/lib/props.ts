@@ -1,36 +1,35 @@
 import { Message } from "@ai-sdk/react";
 
 export type HeaderPartProps = {
-  className?: string
-  textScale: string,
-  isCoverOpen: boolean,
-  handleCoverOpen: () => void
-}
+  className?: string;
+  textScale: string;
+  isCoverOpen: boolean;
+  handleCoverOpen: () => void;
+};
 
 export type MessagePartProps = {
-  messages?: Message[],
-  error?: any,
-  status?: any,
-  handleEdit?: any,
-  handleDelete?: any,
-  reload?: any,
-  textScale: string,
-  style: string,
-  input?: any,
-  handleSubmit?: () => void,
-  handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
-  handleCoverOpen: () => void,
-  handleSourceOpen: () => void
-}
+  messages?: Message[];
+  error?: any;
+  status?: any;
+  handleDelete?: any;
+  reload?: any;
+  textScale: string;
+  style: string;
+  input?: any;
+  handleSubmit?: () => void;
+  handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleCoverOpen: () => void;
+  handleSourceOpen: () => void;
+};
 
 export type InputPartProps = {
-  handleSubmit?: any,
-  input?: any,
-  handleInputChange?: any,
-  status?: any,
-  stop?: any,
-  style: string
-}
+  handleSubmit?: any;
+  input?: any;
+  handleInputChange?: any;
+  status?: any;
+  stop?: any;
+  style: string;
+};
 
 export type QuoteProps = {
   textScale: string;
@@ -66,4 +65,21 @@ export type FaqProps = {
   handleSubmit?: () => void;
 };
 
+export type UserMessageOptsProps = {
+  messageId: string;
+  handleEdit: (messageId: string) => void;
+  handleDelete: (messageId: string) => void;
+  reload: () => void;
+  status: string;
+  style: string;
+  editingMessageId: string;
+};
 
+export type AssistantMessageOptsProps = {
+  messageId: string;
+  status: string;
+  style: string;
+  isCopied: boolean;
+  handleCopy: (content: string) => void;
+  messageContent: string;
+};
