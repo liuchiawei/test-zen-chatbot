@@ -22,8 +22,6 @@ export default function MessagePart({
   input,
   handleSubmit,
   handleInputChange,
-  handleSourceOpen,
-  handleCoverOpen
 }: MessagePartProps) {
   // メッセージの最下部を参照する
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -186,7 +184,7 @@ export default function MessagePart({
                         const { result } = toolInvocation;
                         return (
                             <div key={toolCallId} className="mt-2 max-w-[85%] w-full flex flex-col justify-start">
-                              <QuotationReply textScale={textScale} style={style} data={result.data} handleSourceOpen={handleSourceOpen} handleCoverOpen={handleCoverOpen} />
+                              <QuotationReply textScale={textScale} style={style} data={result.data} />
                             </div>
                         );
                     }

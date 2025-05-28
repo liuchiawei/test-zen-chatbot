@@ -18,8 +18,6 @@ export type MessagePartProps = {
   input?: any;
   handleSubmit?: () => void;
   handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleCoverOpen: () => void;
-  handleSourceOpen: () => void;
 };
 
 export type InputPartProps = {
@@ -38,8 +36,6 @@ export type QuoteProps = {
     conversation_id: string;
     answer: string;
   };
-  handleSourceOpen: () => void;
-  handleCoverOpen: () => void;
 };
 
 export type WeatherProps = {
