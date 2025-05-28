@@ -27,7 +27,7 @@ export default function TextScaleButton({
             variant="ghost"
             size="icon"
             aria-label="Text Scale"
-            className={cn("cursor-pointer", className)}
+            className={cn(className)}
             onClick={() => handleTextScaleChange()}
           >
             <TextSize />

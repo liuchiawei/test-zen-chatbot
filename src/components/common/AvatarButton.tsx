@@ -12,7 +12,7 @@ export default function AvatarButton({ className }: { className?: string }) {
           <Button
             variant='ghost'
             size='icon'
-            className={cn("cursor-pointer", className)}
+            className={cn(className)}
           >
             <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" />

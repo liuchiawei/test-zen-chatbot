@@ -156,7 +156,7 @@ export const searchTool = createTool({
         };
       }
 
-      const responseData = await response.text();
+      const responseData = await response.json();
       
       return {
         status: response.status,

@@ -1,42 +1,41 @@
 import { Message } from "@ai-sdk/react";
 
 export type HeaderPartProps = {
-  className?: string
-  textScale: string,
-  isCoverOpen: boolean,
-  handleCoverOpen: () => void
-}
+  className?: string;
+  textScale: string;
+  isCoverOpen: boolean;
+  handleCoverOpen: () => void;
+};
 
 export type MessagePartProps = {
-  messages?: Message[],
-  error?: any,
-  status?: any,
-  handleEdit?: any,
-  handleDelete?: any,
-  reload?: any,
-  textScale: string,
-  input?: any,
-  handleSubmit?: () => void,
-  handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
-  handleCoverOpen: () => void,
-  handleSourceOpen: () => void
-}
+  messages?: Message[];
+  error?: any;
+  status?: any;
+  handleDelete?: any;
+  reload?: any;
+  textScale: string;
+  style: string;
+  input?: any;
+  handleSubmit?: () => void;
+  handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
 
 export type InputPartProps = {
-  handleSubmit?: any,
-  input?: any,
-  handleInputChange?: any,
-  status?: any,
-  stop?: any,
-}
+  handleSubmit?: any;
+  input?: any;
+  handleInputChange?: any;
+  status?: any;
+  stop?: any;
+  style: string;
+};
 
 export type QuoteProps = {
   textScale: string;
-  quote: string;
-  author: string;
-  source: string;
-  handleSourceOpen: () => void,
-  handleCoverOpen: () => void
+  style: string;
+  data: {
+    conversation_id: string;
+    answer: string;
+  };
 };
 
 export type WeatherProps = {
@@ -47,6 +46,7 @@ export type WeatherProps = {
 
 export type FaqCarouselProps = {
   textScale: string;
+  style: string;
   input?: any;
   handleSubmit?: () => void;
   handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -54,10 +54,30 @@ export type FaqCarouselProps = {
 
 export type FaqProps = {
   textScale: string;
+  style: string;
   question: string;
   input?: any;
   handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit?: () => void;
 };
 
+export type UserMessageOptsProps = {
+  messageId: string;
+  handleEdit: (messageId: string) => void;
+  handleDelete: (messageId: string) => void;
+  reload: () => void;
+  status: string;
+  style: string;
+  editingMessageId: string;
+};
 
+export type AssistantMessageOptsProps = {
+  messageId: string;
+  status: string;
+  style: string;
+  isCopied: boolean;
+  isSpeaking: boolean;
+  handleCopy: (content: string) => void;
+  handleSpeak: (content: string) => void;
+  messageContent: string;
+};
