@@ -10,6 +10,7 @@ import content from '@/data/content.json';
 import LoadingThreeDotsJumping from '@/components/common/loading';
 import { UserMessageOpts, AssistantMessageOpts } from '@/components/common/messageOpts';
 import { Send } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function MessagePart({
   messages,
@@ -152,7 +153,7 @@ export default function MessagePart({
             key={message.id}
             className="px-2 md:px-3 grid grid-cols-[56px_1fr_12px] md:grid-cols-[60px_1fr_12px] justify-center w-full mt-6"
           >
-            {/* キャラクター表示 */}
+            {/* キャラクター画像表示 */}
             <div
               className={`w-full h-full flex justify-center
               ${message.role === 'user' ? 'col-start-3' : 'col-start-1'}
@@ -172,24 +173,18 @@ export default function MessagePart({
               `}>
 
               {/* ツール呼び出しUI */}
-              {message.role === 'assistant' && message.toolInvocations?.map(toolInvocation => {
-                const { toolName, toolCallId, state } = toolInvocation;
-
-                if (state !== 'result') {
-                  return <LoadingThreeDotsJumping key={toolCallId} />
+              {message.role === 'assistant' && message.parts?.map(part => {
+                if (part.type !== 'tool-invocation') return null;
+                if (part.toolInvocation.state === 'result') {
+                  if (part.toolInvocation.toolName === 'searchTool') {
+                    const { result } = part.toolInvocation;
+                    return (
+                      <div key={part.toolInvocation.toolCallId} className="mt-2 max-w-[85%] w-full flex flex-col justify-start">
+                        <QuotationReply textScale={textScale} style={style} data={result.data} />
+                      </div>
+                    );
+                  }
                 }
-                
-                if (state === 'result') {
-                    if (toolName === 'searchTool') {
-                        const { result } = toolInvocation;
-                        return (
-                            <div key={toolCallId} className="mt-2 max-w-[85%] w-full flex flex-col justify-start">
-                              <QuotationReply textScale={textScale} style={style} data={result.data} />
-                            </div>
-                        );
-                    }
-                }
-
                 return null;
               })}
 
@@ -251,7 +246,11 @@ export default function MessagePart({
                 </>
               ) : (
                 // アシスタントの場合
-                <p className={`text-justify tracking-wide
+                <motion.p 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className={`text-justify tracking-wide
                   ${textScale === 'md'
                     ? 'text-sm leading-6'
                     : 'text-2xl leading-10'
@@ -259,9 +258,15 @@ export default function MessagePart({
                   ${style === 'default'
                     ? 'text-foreground/90 '
                     : 'text-stone-100'}
-                  `}>
-                  {message.content}
-                </p>
+                  ${status === 'streaming' && 'animate-pulse'}
+                  `}
+                >
+                  {status === 'streaming'
+                  ? message.parts?.some(part => part.type === 'tool-invocation' && part.toolInvocation.state === 'result')
+                    ? content.loadingMessage.toolInvoked
+                    : content.loadingMessage.toolInvoking
+                  : message.content}
+                </motion.p> 
               )}
               {/* 生成中にはボタンセット呼び出しない */}
               {/* ボタンセット */}
@@ -293,8 +298,8 @@ export default function MessagePart({
             </div>
           </div>
         ))}
+        {/* ローディングメッセージ */}
         {status === 'submitted' && <LoadingThreeDotsJumping />}
-        
       </>
     );
   }, [messages, status, error, textScale, handleEdit, handleDelete, reload]);
