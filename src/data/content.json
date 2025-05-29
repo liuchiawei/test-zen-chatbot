@@ -54,5 +54,10 @@
     "delete": "削除",
     "copy": "コピー",
     "speak": "音声再生"
+  },
+  "loadingMessage": {
+    "streaming": "うーん…考えを巡らせております。",
+    "toolInvoking": "今しばらく、データベースを参照しております。",
+    "toolInvoked": "探した結果をまとめております。"
   }
 }

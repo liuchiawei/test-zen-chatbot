@@ -12,7 +12,7 @@ export default function NavOptionBar({ textScale, onTextScaleChange, style, onSt
       <ThemeToggle className='rounded hover:text-white' />
       <Sheet>
         <SheetTrigger>
-          <AvatarButton className='rounded' />
+          <AvatarButton className='rounded-full' />
         </SheetTrigger>
         <SheetContent>
           <SheetHeader>
