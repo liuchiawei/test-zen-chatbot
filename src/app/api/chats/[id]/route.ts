@@ -13,10 +13,10 @@ function getChatFile(id: string): string {
 // チャットデータを読み込むGETエンドポイント
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    const { id } = context.params;
     const chatFile = getChatFile(id);
 
     if (!existsSync(chatFile)) {
@@ -40,10 +40,10 @@ export async function GET(
 // チャットデータを更新するPUTエンドポイント
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    const { id } = context.params;
     const { messages }: { messages: Message[] } = await request.json();
     const chatFile = getChatFile(id);
 
