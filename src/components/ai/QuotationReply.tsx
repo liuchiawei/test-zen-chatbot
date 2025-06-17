@@ -4,8 +4,17 @@ import { motion } from "motion/react";
 import { QuoteProps } from "@/lib/props";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import SourcePart from "@/components/common/sourcePart";
+import MarkdownRenderer from "@/components/common/markdownRender";
 
-export const QuotationReply = ({ textScale, style, data }: QuoteProps) => {
+export const QuotationReply = ({ textScale, style, data, summary }: QuoteProps) => {
+  // 文字列を100文字で切り詰める関数
+  const truncateText = (text: string, maxLength: number = 100): string => {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength) + '...';
+  };
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -13,45 +22,27 @@ export const QuotationReply = ({ textScale, style, data }: QuoteProps) => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className={`relative flex flex-col w-full p-6 mb-4 rounded-lg shadow-md overflow-hidden cursor-pointer
+          className={`relative flex w-full mb-4 rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300
             ${textScale === 'md'
-              ? 'gap-2'
-              : 'gap-4'}
+              ? 'gap-2 p-8'
+              : 'gap-4 p-12'}
             ${style === 'default'
               ? 'bg-linear-to-b from-stone-50/50 to-stone-200/70 dark:from-stone-700/50 dark:to-stone-800/50'
               : 'bg-black/30 text-stone-100 border border-stone-300 dark:border-stone-400'}
             `}
         >
-          <h3 className={`font-semibold text-gray-900 dark:text-gray-100 before:content-['“'] before:absolute before:left-0 before:top-10 before:-z-10 before:text-[144px] before:leading-6
+          <h1 className={`font-bold text-gray-900 dark:text-gray-100 before:content-['”'] before:absolute before:right-2 before:-z-10 before:leading-6
             ${textScale === 'md'
-              ? 'text-lg'
-              : 'text-5xl leading-16'
+              ? 'text-2xl leading-10 before:text-[144px] before:top-14'
+              : 'text-4xl leading-16 before:text-[240px] before:top-24'
             }
             ${style === 'default'
-              ? 'before:text-stone-400/50 dark:before:text-stone-700/50'
+              ? 'before:text-stone-400/40 dark:before:text-stone-700/50'
               : 'before:text-stone-100/20'}
-            `}
-          >{data.answer}</h3>
-          <div className="self-end flex justify-center items-center gap-2">
-            {/* TODO: Link to source */}
-            {/* 引用ソース */}
-            <p className=
-              {`${textScale === 'md'
-                ? 'text-sm'
-                : 'text-xl'
-              }`}
-            >『 {data.conversation_id} 』</p>
-            {/* 作者 */}
-            <p className={`font-bold
-              ${textScale === 'md'
-                ? 'text-sm'
-                : 'text-xl'
-              }`}
-            >{data.conversation_id}</p>
-          </div>
+            `}>{summary}</h1>
         </motion.div>
       </SheetTrigger>
-      <SourcePart />
+      <SourcePart textScale={textScale} style={style} data={data} summary={summary} />
     </Sheet>
   )
 }

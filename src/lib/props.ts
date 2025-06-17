@@ -7,6 +7,8 @@ export type HeaderPartProps = {
   handleCoverOpen: () => void;
 };
 
+export type ChatMode = 'searchOnly' | 'searchSummary' | 'category' | 'free';
+
 export type MessagePartProps = {
   messages?: Message[];
   error?: any;
@@ -18,6 +20,7 @@ export type MessagePartProps = {
   input?: any;
   handleSubmit?: () => void;
   handleInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleUpdateMessage?: (messageId: string, newContent: string) => void;
 };
 
 export type InputPartProps = {
@@ -27,6 +30,13 @@ export type InputPartProps = {
   status?: any;
   stop?: any;
   style: string;
+  currentMode: ChatMode;
+  setCurrentMode: (mode: ChatMode) => void;
+};
+
+export type ModeTagsProps = {
+  currentMode: ChatMode;
+  setCurrentMode: (mode: ChatMode) => void;
 };
 
 export type QuoteProps = {
@@ -36,6 +46,17 @@ export type QuoteProps = {
     conversation_id: string;
     answer: string;
   };
+  summary: string;
+};
+
+export type SourceProps = {
+  textScale: string;
+  style: string;
+  data: {
+    conversation_id: string;
+    answer: string;
+  };
+  summary: string;
 };
 
 export type WeatherProps = {

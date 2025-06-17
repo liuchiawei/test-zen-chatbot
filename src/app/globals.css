@@ -50,7 +50,7 @@
 :root {
   --font-noto-serif-jp: noto-serif-jp, serif;
   --radius: 0.625rem;
-  --background: oklch(0.9728 0.0095 93.57);
+  --background: oklch(0.942 0.008 93.57);
   --foreground: oklch(0.147 0.004 49.25);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.147 0.004 49.25);
@@ -77,7 +77,7 @@
   --sidebar-foreground: oklch(0.147 0.004 49.25);
   --sidebar-primary: oklch(0.216 0.006 56.043);
   --sidebar-primary-foreground: oklch(0.985 0.001 106.423);
-  --sidebar-accent: oklch(0.97 0.001 106.424);
+  --sidebar-accent: oklch(0.91 0.018 93.57);
   --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
   --sidebar-border: oklch(0.68 0.003 48.717);
   --sidebar-ring: oklch(0.68 0.003 48.717);

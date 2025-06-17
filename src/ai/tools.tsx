@@ -1,92 +1,12 @@
-import { findRelevantContent } from "@/lib/ai/search";
 import { tool as createTool } from "ai";
+import { generateText } from "ai";
+import { azure } from "@ai-sdk/azure";
 import process from "process";
 import { z } from "zod";
 
-// テスト用引用返答ツール
-export const quotationReplyTool = createTool({
-    description: "Reply to the user with a quotation from 池田大作.",
-    parameters: z.object({
-        quote: z.string().describe("The quotation to reply with"),
-        author: z.string().describe("The author of the quotation"),
-        source: z.string().describe("The source of the quotation"),
-    }),
-    execute: async ({ quote, author, source }) => ({
-        quote: '勝利とは、最後まで屈しないことである。',
-        author: '池田大作',
-        source: '人間革命',
-    }),
-});
-
-// TODO: データベースから情報取得ツール(未使用)
-export const getInformation = createTool({
-    description: `get information from your knowledge base to answer the user's question.`,
-    parameters: z.object({
-      question: z.string().describe("the users question"),
-      similarQuestions: z.array(z.string()).describe("similar questions to the user's question. generate 3 similar questions to the user's question."),
-    }),
-    execute: async ({ question, similarQuestions }: { question: string; similarQuestions: string[] }) => {
-      try {
-        // Azure Search設定が無い場合はモックデータを返す
-        if (!process.env.AZURE_SEARCH_ENDPOINT || !process.env.AZURE_SEARCH_INDEX_NAME || !process.env.AZURE_EMBEDDING_DEPLOYMENT_NAME) {
-          console.log("Azure Search not configured, returning mock data");
-          return [
-            {
-              text: "人生は永続的な創造であり、自分自身を向上させ続けることが大切です。困難に直面した時こそ、内なる力を信じて前進することが重要です。",
-              id: "mock001",
-              similarity: 0.9
-            },
-            {
-              text: "真の勝利とは、他者を打ち負かすことではなく、自分自身の弱さを克服することです。毎日の小さな努力の積み重ねが、やがて大きな変化をもたらします。",
-              id: "mock002", 
-              similarity: 0.8
-            }
-          ];
-        }
-
-        // メインの質問と類似質問の両方を検索
-        const allQuestions = [question, ...similarQuestions];
-        
-        const results = await Promise.all(
-          allQuestions.map(
-            async (q: string) => await findRelevantContent(q),
-            ),
-          );
-        
-        // 重複を除去して一意の結果のみを返す
-        const uniqueResults = Array.from(
-          new Map(results.flat().map((item) => [item?.text, item])).values(),
-        );
-        
-        return uniqueResults;
-      } catch (error) {
-        console.error("Error in getInformation tool:", error);
-        // エラーが発生した場合もモックデータを返す
-        // エラーメッセージによって適切な対応を提供
-        if (error instanceof Error && error.message.includes("Unknown model")) {
-          console.log("Embedding model configuration error - check AZURE_EMBEDDING_DEPLOYMENT_NAME");
-          return [
-            {
-              text: "現在、知識検索システムの設定に問題があります。Azure OpenAIのembeddingモデルの設定を確認してください。それでも池田大作先生の教えから、どんな困難も乗り越えられる力が私たちの内にあることを知っています。",
-              id: "config_error001",
-              similarity: 0.5
-            }
-          ];
-        }
-        
-        return [
-          {
-            text: "申し訳ございませんが、現在知識ベースにアクセスできません。しかし、池田大作先生の教えから、どんな困難も乗り越えられる力が私たちの内にあることを知っています。",
-            id: "error001",
-            similarity: 0.5
-          }
-        ];
-      }
-    },
-});
 
 // Search ツール
-export const searchTool = createTool({
+const searchTool = createTool({
   description: "Search for information in the knowledge base",
   parameters: z.object({
     prompt: z.string().describe("The prompt to search for"),
@@ -157,10 +77,28 @@ export const searchTool = createTool({
       }
 
       const responseData = await response.json();
+
+      const summary = await generateText({
+        model: azure(process.env.AZURE_DEPLOYMENT_NAME!),
+        system: `あなたは優秀な要約スペシャリストです。
+        提供されたコンテンツを的確で読みやすい一言要約に変換してください。
+        以下の指針に従ってください：
+        - 重要なポイントを漏らさない
+        - 簡潔で理解しやすい日本語で回答
+        - 元のコンテンツの趣旨を保持
+        - 不要な詳細は省略
+        - 読み手にとって価値のある情報を優先`,
+        prompt: `以下のコンテンツを要約してください：
+        ${responseData.answer}
+        要約を生成してください。`,
+        temperature: 0.3, // 一貫性を保つため低めに設定
+        maxTokens: 100,   // 要約なので適度な長さに制限
+      });
       
       return {
         status: response.status,
         data: responseData,
+        summary: summary.text,
         success: true
       };
 
@@ -174,8 +112,81 @@ export const searchTool = createTool({
   },
 });
 
+// 要約生成ツール (未使用)
+const getSummaryTool = createTool({
+  description: "Get a summary of the data from searchTool using AI",
+  parameters: z.object({
+    data: z.string().describe("The data to get a summary of"),
+    prompt: z.string().optional().describe("Optional specific instructions for the summary"),
+  }),
+  execute: async ({ data, prompt }) => {
+    try {
+      // Azure AIモデルを初期化
+      const model = azure(process.env.AZURE_DEPLOYMENT_NAME!);
+      
+      // dataをパースして構造化（もしJSONの場合）
+      let parsedData;
+      try {
+        parsedData = typeof data === 'string' ? JSON.parse(data) : data;
+      } catch {
+        parsedData = data; // パース失敗の場合はそのまま使用
+      }
+      
+      // コンテンツを抽出・整理
+      let contentToSummarize = '';
+      if (parsedData && typeof parsedData === 'object' && parsedData.data) {
+        // Azure APIからの応答構造に合わせて処理
+        if (parsedData.data.answer) {
+          contentToSummarize = parsedData.data.answer;
+        } else if (parsedData.data.content) {
+          contentToSummarize = parsedData.data.content;
+        } else {
+          contentToSummarize = JSON.stringify(parsedData.data, null, 2);
+        }
+      } else {
+        contentToSummarize = typeof parsedData === 'string' ? parsedData : JSON.stringify(parsedData, null, 2);
+      }
+
+      // AIに要約生成を依頼
+      const result = await generateText({
+        model,
+        system: `あなたは優秀な要約スペシャリストです。
+        提供されたコンテンツを的確で読みやすい要約に変換してください。
+        以下の指針に従ってください：
+        - 重要なポイントを漏らさない
+        - 簡潔で理解しやすい日本語で回答
+        - 元のコンテンツの趣旨を保持
+        - 不要な詳細は省略
+        - 読み手にとって価値のある情報を優先`,
+        prompt: `以下のコンテンツを要約してください：
+
+        ${contentToSummarize}
+        ${prompt ? `特別な要約指示: ${prompt}` : ''}
+
+        要約を生成してください。`,
+        temperature: 0.3, // 一貫性を保つため低めに設定
+        maxTokens: 500,   // 要約なので適度な長さに制限
+      });
+
+      return {
+        success: true,
+        summary: result.text,
+        originalDataLength: contentToSummarize.length,
+        timestamp: new Date().toISOString()
+      };
+
+    } catch (error) {
+      console.error('Error in getSummaryTool:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        summary: "要約の生成中にエラーが発生しました。"
+      };
+    }
+  }
+});
+
 export const tools = {
-    // replyWithQuotation: quotationReplyTool,
-    // getInformation: getInformation,
     searchTool: searchTool,
+    // getSummaryTool: getSummaryTool,
 }
