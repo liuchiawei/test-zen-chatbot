@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion } from 'motion/react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import FaqCarousel from '@/components/common/faqCarousel';
@@ -38,14 +38,14 @@ export default function MessagePart({
   const [editingContent, setEditingContent] = useState<string>('');
 
   // 編集開始ハンドラー
-  const handleEdit = (messageId: string) => {
+  const handleEdit = useCallback((messageId: string) => {
     if (!messages) return;
     const message = messages.find(m => m.id === messageId);
     if (message) {
       setEditingMessageId(messageId);
       setEditingContent(message.content);
     }
-  }
+  }, [messages]);
 
   // 編集内容変更ハンドラー
   const handleEditChange = (value: string) => {
@@ -53,7 +53,7 @@ export default function MessagePart({
   }
 
   // 編集送信ハンドラー
-  const handleEditSubmit = (messageId: string) => {
+  const handleEditSubmit = useCallback((messageId: string) => {
     if (!messages || !editingContent.trim()) return;
     
     // メッセージを更新する処理をここに追加
@@ -63,7 +63,7 @@ export default function MessagePart({
     setEditingContent('');
     // メッセージが更新された後にreloadする
     reload();
-  }
+  }, [messages, editingContent, handleUpdateMessage, reload]);
 
   // 編集キャンセルハンドラー
   const handleEditCancel = () => {
@@ -76,7 +76,7 @@ export default function MessagePart({
   const [isCopied, setIsCopied] = useState(false);
 
   // コピーハンドラー
-  const handleCopy = async (content: string) => {
+  const handleCopy = useCallback(async (content: string) => {
     try {
       await navigator.clipboard.writeText(content);
       setIsCopied(true);
@@ -94,7 +94,7 @@ export default function MessagePart({
       document.execCommand('copy');
       document.body.removeChild(textArea);
     }
-  }
+  }, []);
 
   // 音声再生状態管理
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -103,7 +103,7 @@ export default function MessagePart({
   const audioCache = useRef<Map<string, HTMLAudioElement>>(new Map());
 
   // 音頻再生ハンドラー
-  const handleSpeak = async (content: string) => {
+  const handleSpeak = useCallback(async (content: string) => {
     // キャッシュから既存の音頻を確認
     const cachedAudio = audioCache.current.get(content);
     
@@ -147,7 +147,7 @@ export default function MessagePart({
       console.error('音頻生成に失敗しました:', error);
       setIsSpeaking(false); // エラー時もfalseにする
     }
-  }
+  }, [isSpeaking]);
   
   // メッセージリストのレンダリングをメモ化してパフォーマンス最適化
   const renderedMessages = useMemo(() => {
