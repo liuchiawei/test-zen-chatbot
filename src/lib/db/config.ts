@@ -1,11 +1,11 @@
 // ストレージタイプの設定
-export function useDatabase(): boolean {
+export function isDatabaseEnabled(): boolean {
   return process.env.USE_DATABASE === "true";
 }
 
 // ストレージ層の動的インポート
 export async function getStorageAdapter() {
-  if (useDatabase()) {
+  if (isDatabaseEnabled()) {
     console.log("データベースストレージを使用します");
     return await import("./chat-store-db");
   } else {
