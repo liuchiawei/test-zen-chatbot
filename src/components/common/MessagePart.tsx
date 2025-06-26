@@ -170,7 +170,7 @@ export default function MessagePart({
               {message.role === 'user'
               ? ''
               : <Avatar>
-                  <AvatarImage src={content.chat.role.answerImage} />
+                  {/* <AvatarImage src={content.chat.role.answerImage} /> */}
                   <AvatarFallback>
                     {content.chat.role.answer.charAt(0)}
                   </AvatarFallback>
