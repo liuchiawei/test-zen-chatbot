@@ -27,7 +27,7 @@
     "role": {
       "user": "私",
       "answer": "池田先生",
-      "answerImage": "/images/ikeda_01.jpg"
+      "answerImage": "/images/demo_1.jpg"
     },
     "input": {
       "placeholder": "質問を入力してください",
