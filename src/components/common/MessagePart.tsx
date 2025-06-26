@@ -188,13 +188,13 @@ export default function MessagePart({
                     const { result } = part.toolInvocation;
                     if (result.reason) {
                       return (
-                        <div className="p-4 text-center">
+                        <div key={`search-error-${index}`} className="p-4 text-center">
                           検索失敗理由: {result.reason}
                         </div>
                       );
                     } else if (result.completionStreamResponseData.extracted_chunks.length === 0) {
                       return (
-                        <div className="p-4 text-center">
+                        <div key={`search-empty-${index}`} className="p-4 text-center">
                           検索結果が見つかりませんでした
                         </div>
                       );
@@ -338,7 +338,7 @@ export default function MessagePart({
           })}
       </>
     );
-  }, [messages, status, error, textScale, handleEdit, handleDelete, reload]);
+  }, [messages, status, error, textScale, style, editingMessageId, editingContent, handleEdit, handleEditSubmit, handleDelete, reload, isCopied, handleCopy, handleSpeak, isSpeaking]);
 
   // 初期画面
   return (
