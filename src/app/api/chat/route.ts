@@ -6,7 +6,7 @@ import {
   createIdGenerator,
 } from "ai";
 import { tools } from "@/ai/tools";
-import { saveChat, loadChat } from "@/ai/chat-store";
+import { getStorage } from "@/lib/db/config";
 import { ChatMode } from "@/lib/props";
 
 // TODO: モードごとのシステムプロンプト
@@ -31,7 +31,8 @@ export async function POST(req: Request) {
     const { message, id, mode } = await req.json();
 
     // load the previous messages from the server:
-    const previousMessages = await loadChat(id);
+    const storage = await getStorage();
+    const previousMessages = await storage.loadChat(id);
 
     // append the new message to the previous messages:
     const messages = appendClientMessage({
@@ -48,7 +49,7 @@ export async function POST(req: Request) {
       tools,
       maxSteps: mode === "searchOnly" ? 1 : 5,
       async onFinish({ response }) {
-        await saveChat({
+        await storage.saveChat({
           id,
           messages: appendResponseMessages({
             messages,

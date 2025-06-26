@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { updateChatTitle } from "@/ai/chat-store";
+import { getStorage } from "@/lib/db/config";
 
 export async function PUT(
   request: NextRequest,
@@ -9,7 +9,8 @@ export async function PUT(
     const { id } = await params;
     const { title }: { title: string } = await request.json();
 
-    await updateChatTitle(id, title);
+    const storage = await getStorage();
+    await storage.updateChatTitle(id, title);
 
     return NextResponse.json({ success: true });
   } catch (error) {
