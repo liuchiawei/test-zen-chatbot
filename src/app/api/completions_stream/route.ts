@@ -1,0 +1,109 @@
+import { NextResponse } from "next/server";
+
+export async function POST(request: Request) {
+  try {
+    // 環境変数の検証
+    if (
+      !process.env.azure_storage_connection_string ||
+      !process.env.azure_container_name
+    ) {
+      return NextResponse.json(
+        {
+          detail: [
+            {
+              loc: ["env", "azure_storage_connection_string"],
+              msg: "azure_storage_connection_string environment variable is required",
+              type: "missing",
+            },
+            {
+              loc: ["env", "azure_container_name"],
+              msg: "azure_container_name environment variable is required",
+              type: "missing",
+            },
+          ],
+        },
+        { status: 422 }
+      );
+    }
+
+    // Azure APIの設定情報
+    const AZURE_CONFIG = {
+      url: "https://prjs-api.azurewebsites.net/completions/stream",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+        "Llm-Api-Key": process.env.llm_api_key,
+        "Llm-Api-Version": process.env.llm_api_version,
+        "Llm-Endpoint": process.env.llm_endpoint,
+        "Llm-Model": process.env.llm_model,
+      },
+    };
+
+    // Azure APIに直接リクエストを送信
+    const response = await fetch(AZURE_CONFIG.url, {
+      method: "POST",
+      headers: AZURE_CONFIG.headers as Record<string, string>,
+      body: JSON.stringify({
+        conversation_id: `conv_${Date.now()}`,
+        prompt: "優しく説明して",
+        selected_chunks: [
+          {
+            query: "string",
+            search_results: [
+              {
+                filename: "string",
+                heading: "string",
+                chunk_id: "string",
+                filepath: "string",
+                references: ["string"],
+                page_number: 0,
+                parent_id: "string",
+                chunk: "string",
+                "@search.score": 0,
+                "@search.reranker_score": 0,
+                "@search.highlights": {},
+                "@search.captions": {},
+                sas: "string",
+              },
+            ],
+          },
+        ],
+        conversation_history: [],
+      }),
+    });
+
+    if (!response.ok) {
+      console.error(`Azure API error: ${response.status}`);
+
+      if (response.status === 422) {
+        return NextResponse.json(
+          {
+            detail: [
+              {
+                loc: ["azure-api"],
+                msg: "Validation error from Azure API",
+                type: "validation_error",
+              },
+            ],
+          },
+          { status: 422 }
+        );
+      }
+
+      return NextResponse.json(
+        { error: `Azure API failed with status ${response.status}` },
+        { status: response.status }
+      );
+    }
+
+    // レスポンスデータを取得して返却
+    const responseData = await response.json();
+    return NextResponse.json(responseData);
+  } catch (error) {
+    console.error("Error fetching directories:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch directories" },
+      { status: 500 }
+    );
+  }
+}

@@ -10,7 +10,7 @@ import { createIdGenerator } from 'ai';
 import { ChatMode } from '@/lib/props';
 
 // TODO: モード選択の型定義
-export default function Chat({ chatId, initialMessages, textScale, style, mode }: { chatId?: string | undefined, initialMessages?: Message[], textScale: string, style: string, mode: ChatMode }) {
+export default function Chat({ chatId, initialMessages, textScale, style, mode, setMode }: { chatId?: string | undefined, initialMessages?: Message[], textScale: string, style: string, mode: ChatMode, setMode: (mode: ChatMode) => void }) {
   const { messages, setMessages, status, input, stop, reload, handleInputChange, handleSubmit, error } = useChat({
     id: chatId,
     initialMessages,
@@ -21,11 +21,9 @@ export default function Chat({ chatId, initialMessages, textScale, style, mode }
     }),
     // send the last message and mode to the server:
     experimental_prepareRequestBody({ messages, id }) {
-      return { message: messages[messages.length - 1], id, mode: currentMode };
+      return { message: messages[messages.length - 1], id, mode: mode };
     },
   });
-
-  const [currentMode, setCurrentMode] = useState<ChatMode>(mode);
 
   const handleDelete = (id: string) => {
     setMessages(messages.filter(message => message.id !== id))
@@ -71,7 +69,7 @@ export default function Chat({ chatId, initialMessages, textScale, style, mode }
         handleUpdateMessage={handleUpdateMessage}
       />
       {/* ユーザー入力フォーム */}
-      <InputPart handleSubmit={handleSubmit} input={input} handleInputChange={handleInputChange} status={status} stop={stop} style={style} currentMode={currentMode} setCurrentMode={setCurrentMode} />
+      <InputPart handleSubmit={handleSubmit} input={input} handleInputChange={handleInputChange} status={status} stop={stop} style={style} currentMode={mode} setCurrentMode={setMode} />
     </motion.div>
   );
 }

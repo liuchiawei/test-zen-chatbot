@@ -39,30 +39,24 @@ export type ModeTagsProps = {
   setCurrentMode: (mode: ChatMode) => void;
 };
 
-export type QuoteProps = {
+export type SearchResultsProps = {
   textScale: string;
   style: string;
-  data: {
-    conversation_id: string;
-    answer: string;
-  };
-  summary: string;
+  extracted_chunks: [
+    {
+      text: string;
+      filename: string;
+    }
+  ];
 };
 
 export type SourceProps = {
   textScale: string;
   style: string;
-  data: {
-    conversation_id: string;
-    answer: string;
+  chunk: {
+    text: string;
+    filename: string;
   };
-  summary: string;
-};
-
-export type WeatherProps = {
-  temperature: number;
-  weather: string;
-  location: string;
 };
 
 export type FaqCarouselProps = {

@@ -1,7 +1,7 @@
 import { SourceProps } from "@/lib/props";
 import MarkdownRenderer from "@/components/common/markdownRender";
 
-export default function SourceArticle({ textScale, style, data, summary }: SourceProps) {
+export default function SourceArticle({ textScale, style, data }: SourceProps) {
   return (
     <div className={`py-4 flex flex-col gap-4 relative
       ${textScale === 'md'
@@ -15,7 +15,7 @@ export default function SourceArticle({ textScale, style, data, summary }: Sourc
           : 'text-2xl md:text-4xl leading-10 md:leading-16'
         }`}
       >
-        {summary}
+        {data.search_results[0].filename.replace('.md', '').split('　')[1]}
       </h1>
       <div className={`text-justify tracking-wide
         ${textScale === 'md'
@@ -23,7 +23,7 @@ export default function SourceArticle({ textScale, style, data, summary }: Sourc
           : 'text-xl leading-10'
         }`}
       >
-        <MarkdownRenderer content={data.answer} />
+        <MarkdownRenderer content={data.search_results[0].chunk} />
       </div>
     </div>
   )

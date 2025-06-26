@@ -15,7 +15,7 @@ export function UserMessageOpts({ messageId, handleEdit, handleDelete, reload, s
               variant='ghost'
               onClick={() => handleEdit(messageId)}
               disabled={!(status === 'ready' || status === 'error')}
-              className={`block aspect-square w-fit cursor-pointer p-2 rounded-sm
+              className={`block aspect-square w-fit p-2 rounded-sm
               ${style === 'default'
               ? 'brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
               : 'hover:bg-stone-900/80'}`}
@@ -37,7 +37,7 @@ export function UserMessageOpts({ messageId, handleEdit, handleDelete, reload, s
               onClick={() => reload()}
               // 編集中には再生成不可
               disabled={!(status === 'ready' || status === 'error') || (editingMessageId === messageId)}
-              className={`block aspect-square w-fit cursor-pointer p-2 rounded-sm
+              className={`block aspect-square w-fit p-2 rounded-sm
               ${style === 'default'
               ? 'brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
               : 'hover:bg-stone-900/80'}`}
@@ -58,7 +58,7 @@ export function UserMessageOpts({ messageId, handleEdit, handleDelete, reload, s
               variant='ghost'
               onClick={() => handleDelete(messageId)}
               disabled={!(status === 'ready')}
-              className={`block aspect-square w-fit cursor-pointer p-2 rounded-sm
+              className={`block aspect-square w-fit p-2 rounded-sm
               ${style === 'default'
               ? 'brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
               : 'hover:bg-stone-900/80'}`}
@@ -86,7 +86,7 @@ export function AssistantMessageOpts({ messageId, status, style, handleCopy, mes
               variant='ghost'
               onClick={() => handleCopy(messageContent)}
               disabled={!(status === 'ready' || status === 'error')}
-              className={`block aspect-square w-fit cursor-pointer p-2 rounded-sm
+              className={`block aspect-square w-fit p-2 rounded-sm
               ${style === 'default'
               ? 'brightness-50 hover:brightness-100 hover:bg-stone-300 dark:hover:bg-stone-600'
               : 'hover:bg-stone-900/80'}`}
@@ -107,7 +107,7 @@ export function AssistantMessageOpts({ messageId, status, style, handleCopy, mes
               variant='ghost'
               onClick={() => handleSpeak(messageContent)}
               disabled={!(status === 'ready' || status === 'error')}
-              className={`block aspect-square w-fit p-2 cursor-pointer rounded-sm
+              className={`block aspect-square w-fit p-2 rounded-sm
               ${style === 'default'
               ? isSpeaking
                 ? 'animate-pulse animate-duration-200 brightness-50 hover:brightness-100 bg-stone-100 dark:bg-stone-600 hover:bg-stone-300 dark:hover:bg-stone-600'

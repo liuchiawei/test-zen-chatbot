@@ -1,6 +1,6 @@
 'use client';
 
-import { ChatMode, InputPartProps } from "@/lib/props";
+import { InputPartProps } from "@/lib/props";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send, Pause } from "lucide-react";

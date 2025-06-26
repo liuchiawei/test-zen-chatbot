@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import FaqCarousel from '@/components/common/faqCarousel';
-import { QuotationReply } from '@/components/ai/QuotationReply';
+import { SearchResults } from '@/components/ai/searchResults';
 import { MessagePartProps } from "@/lib/props";
 import content from '@/data/content.json';
 import MessageLoading from '@/components/common/messageLoading';
@@ -134,8 +134,10 @@ export default function MessagePart({
       audioCache.current.set(content, audioElement);
       
       // 音頻を再生
-      setIsSpeaking(true);
-      audioElement.play();
+      if (!isSpeaking) {
+        setIsSpeaking(true);
+        audioElement.play();
+      }
       
       // 音頻再生終了時にisSpeakingをfalseにする
       audioElement.onended = () => {
@@ -178,20 +180,33 @@ export default function MessagePart({
             <div className={`w-full flex flex-col gap-1 col-start-2 row-start-1
               ${message.role === 'user' ? 'items-end' : 'items-start'}
               `}>
-
               {/* ツール呼び出しUI */}
               {message.role === 'assistant' && message.parts?.map((part, index) => {
                 if (part.type !== 'tool-invocation') return null;
                 if (part.toolInvocation.state === 'result') {
                   if (part.toolInvocation.toolName === 'searchTool') {
                     const { result } = part.toolInvocation;
-                    return <QuotationReply 
-                      key={part.toolInvocation.toolCallId || `tool-${index}`} 
-                      textScale={textScale} 
-                      style={style} 
-                      data={result.data} 
-                      summary={result.summary} 
-                    />
+                    if (result.reason) {
+                      return (
+                        <div className="p-4 text-center">
+                          検索失敗理由: {result.reason}
+                        </div>
+                      );
+                    } else if (result.completionStreamResponseData.extracted_chunks.length === 0) {
+                      return (
+                        <div className="p-4 text-center">
+                          検索結果が見つかりませんでした
+                        </div>
+                      );
+                    }
+                    return (
+                      <SearchResults 
+                        key={part.toolInvocation.toolCallId || `tool-${index}`} 
+                        textScale={textScale} 
+                        style={style} 
+                        extracted_chunks={result.completionStreamResponseData.extracted_chunks}
+                      />
+                    );
                   }
                 }
                 return null;
@@ -269,13 +284,11 @@ export default function MessagePart({
                   ${status === 'streaming' && 'animate-pulse'}
                   `}
                 >
-                  {status === 'streaming'
-                  ? message.parts?.some(part => part.type === 'tool-invocation' && part.toolInvocation.state === 'result')
-                    ? content.loadingMessage.summarizing
-                    : content.loadingMessage.searching
-                  : <MarkdownRenderer content={message.content} />}
+                  <MarkdownRenderer content={message.content} />
                   {/* TODO: デバッグ用 delete after testing */}
-                  {JSON.stringify(message.parts)}
+                  <div className='text-xs text-left max-w-4xl'>
+                    {JSON.stringify(message.parts)}
+                  </div>
                 </motion.div> 
               )}
               {/* 生成中にはボタンセット呼び出しない */}
@@ -308,16 +321,57 @@ export default function MessagePart({
             </div>
           </div>
         ))}
-        {status === 'submitted' && <MessageLoading />}
         {/* ローディングメッセージ */}
+        {status === 'submitted' && <MessageLoading />}
+        {status === 'streaming' && messages[messages.length - 1].parts?.map((part, index) => {
+            if (part.type !== 'tool-invocation') return null;
+            if (part.toolInvocation.toolName === 'searchTool') {
+              return (
+                <div key={part.toolInvocation.toolCallId || `tool-${index}`} className='animate-pulse px-3 md:px-6'>
+                  {part.toolInvocation.state === 'call'
+                   ? content.loadingMessage.searching
+                   : content.loadingMessage.summarizing}
+                </div>
+              );
+            }
+            return null;
+          })}
       </>
     );
   }, [messages, status, error, textScale, handleEdit, handleDelete, reload]);
 
+  // 初期画面
   return (
-    <div className='grow flex flex-col justify-end border-t border-b w-full h-full text-justify pb-4 overflow-hidden pb-10'>
+    <div className='grow flex flex-col justify-end border-t border-b w-full h-full text-justify overflow-hidden pb-8'>
         {messages && messages.length === 0 ? (
-          <div className='px-18'>
+          <div className='px-18 flex flex-col justify-between h-full'>
+            <div className='h-full py-10 text-center'>
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className={`font-bold
+                  ${textScale === 'md'
+                  ? 'text-2xl mb-3'
+                  : 'text-5xl mb-6'}
+                  `}
+              >
+                {content.chat.initial.title}
+              </motion.h1>
+              <p className={`text-foreground/40
+                ${textScale === 'md'
+                ? 'text-sm'
+                : 'text-xl'}
+                `}>
+                {content.chat.initial.content.map((content, index) => (
+                  <motion.span key={index}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.5 + index * 0.3 }}
+                  >{content}<br /></motion.span>
+                ))}
+              </p>
+            </div>
             <h1 className={`my-3 text-xl
               ${textScale === 'md'
               ? 'text-sm'
@@ -327,7 +381,7 @@ export default function MessagePart({
               : 'text-stone-300'}
               `}
             >
-              {content.chat.defaultContent}
+              {content.chat.initial.defaultContent}
             </h1>
             <FaqCarousel
               textScale={textScale}

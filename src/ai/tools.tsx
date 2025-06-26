@@ -1,9 +1,56 @@
 import { tool as createTool } from "ai";
-import { generateText } from "ai";
-import { azure } from "@ai-sdk/azure";
 import process from "process";
 import { z } from "zod";
 
+const necessityTool = createTool({
+  description: "Check if the user's request requires a search",
+  parameters: z.object({
+    prompt: z.string().describe("The prompt to check if a search is necessary"),
+  }),
+  execute: async ({ prompt }) => {
+    try {
+      const AZURE_CONFIG = {
+        url: "https://prjs-api.azurewebsites.net/necessity",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          "Llm-Api-Key": process.env.llm_api_key,
+          "Llm-Api-Version": process.env.llm_api_version,
+          "Llm-Endpoint": process.env.llm_endpoint,
+          "Llm-Model": process.env.llm_model,
+        },
+      };
+      const requestData = {
+        prompt: prompt,
+        conversation_id: `conv_${Date.now()}`,
+        conversation_history: [],
+      };
+      const response = await fetch(AZURE_CONFIG.url, {
+        method: "POST",
+        headers: AZURE_CONFIG.headers as Record<string, string>,
+        body: JSON.stringify(requestData),
+      });
+      if (!response.ok) {
+        console.error(`Azure API error: ${response.status}`);
+        return {
+          error: `Azure API failed with status ${response.status}`,
+          success: false,
+        };
+      }
+      const responseData = await response.json();
+      return {
+        response: responseData,
+        success: true,
+      };
+    } catch (error) {
+      console.error("Error in necessityTool:", error);
+      return {
+        error: error instanceof Error ? error.message : "Unknown error",
+        success: false,
+      };
+    }
+  },
+});
 
 // Search ツール
 const searchTool = createTool({
@@ -15,178 +62,318 @@ const searchTool = createTool({
     try {
       // Azure APIの設定情報
       const AZURE_CONFIG = {
-        url: 'https://prjs-api.azurewebsites.net/completions',
+        url: "https://prjs-api.azurewebsites.net/search",
         headers: {
-          'accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Llm-Api-Key': process.env.llm_api_key,
-          'Llm-Api-Version': process.env.llm_api_version,
-          'Llm-Endpoint': process.env.llm_endpoint,
-          'Llm-Model': process.env.llm_model,
-          'search-endpoint': process.env.search_endpoint,
-          'search-api-key': process.env.search_api_key,
-          'search-index-name': process.env.search_index_name,
-          'semantic-config-name': process.env.semantic_config_name,
-          'Azure-Storage-Connection-String': process.env.azure_storage_connection_string,
-          'Azure-Container-Name': process.env.azure_container_name
-        }
+          accept: "application/json",
+          "Content-Type": "application/json",
+          "Llm-Api-Key": process.env.llm_api_key,
+          "Llm-Api-Version": process.env.llm_api_version,
+          "Llm-Endpoint": process.env.llm_endpoint,
+          "Llm-Model": process.env.llm_model,
+          "search-endpoint": process.env.search_endpoint,
+          "search-api-key": process.env.search_api_key,
+          "search-index-name": process.env.search_index_name,
+          "semantic-config-name": process.env.semantic_config_name,
+          "Azure-Storage-Connection-String":
+            process.env.azure_storage_connection_string,
+          "Azure-Container-Name": process.env.azure_container_name,
+        },
       };
+      // Necessity APIに直接リクエストを送信
+      // Necessity API: ユーザーの要求が検索を必要とするかどうかを判断
+      const necessityRequestData = {
+        prompt: prompt,
+        conversation_id: `conv_${Date.now()}`,
+        conversation_history: [],
+      };
+      const necessityResponse = await fetch("https://prjs-api.azurewebsites.net/necessity", {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          "Llm-Api-Key": AZURE_CONFIG.headers["Llm-Api-Key"] as string,
+          "Llm-Api-Version": AZURE_CONFIG.headers["Llm-Api-Version"] as string,
+          "Llm-Endpoint": AZURE_CONFIG.headers["Llm-Endpoint"] as string,
+          "Llm-Model": AZURE_CONFIG.headers["Llm-Model"] as string,
+        },
+        body: JSON.stringify(necessityRequestData),
+      });
+      if (!necessityResponse.ok) {
+        console.error(`Necessity API error: ${necessityResponse.status}`);
+        return {
+          error: `Necessity API failed with status ${necessityResponse.status}`,
+          success: false,
+        };
+      }
+      const necessityResponseData = await necessityResponse.json();
 
       // リクエストデータを構築
       const requestData = {
         conversation_id: `conv_${Date.now()}`,
         prompt: prompt,
-        selected_chunks: [
-          {
-            query: "string",
-            search_results: [
-              {
-                filename: "string",
-                heading: "string",
-                chunk_id: "string",
-                filepath: "string",
-                references: ["string"],
-                page_number: 0,
-                parent_id: "string",
-                chunk: "string",
-                "@search.score": 0,
-                "@search.reranker_score": 0,
-                "@search.highlights": {},
-                "@search.captions": {},
-                sas: "string"
-              }
-            ]
-          }
-        ],
-        conversation_history: []
+        filter: ["全集"],
+        top: 5,
       };
 
-      // Azure APIに直接リクエストを送信
+      // Azure Search APIに直接リクエストを送信
+      // Search API: ユーザーの要求に合致する情報を検索
       const response = await fetch(AZURE_CONFIG.url, {
-        method: 'POST',
+        method: "POST",
         headers: AZURE_CONFIG.headers as Record<string, string>,
         body: JSON.stringify(requestData),
       });
 
       if (!response.ok) {
-        console.error(`Azure API error: ${response.status}`);
+        console.error(`Search API error: ${response.status}`);
         return {
-          error: `Azure API failed with status ${response.status}`,
-          success: false
+          error: `Search API failed with status ${response.status}`,
+          success: false,
         };
       }
 
       const responseData = await response.json();
 
-      const summary = await generateText({
-        model: azure(process.env.AZURE_DEPLOYMENT_NAME!),
-        system: `あなたは優秀な要約スペシャリストです。
-        提供されたコンテンツを的確で読みやすい一言要約に変換してください。
-        以下の指針に従ってください：
-        - 重要なポイントを漏らさない
-        - 簡潔で理解しやすい日本語で回答
-        - 元のコンテンツの趣旨を保持
-        - 不要な詳細は省略
-        - 読み手にとって価値のある情報を優先`,
-        prompt: `以下のコンテンツを要約してください：
-        ${responseData.answer}
-        要約を生成してください。`,
-        temperature: 0.3, // 一貫性を保つため低めに設定
-        maxTokens: 100,   // 要約なので適度な長さに制限
-      });
-      
-      return {
-        status: response.status,
-        data: responseData,
-        summary: summary.text,
-        success: true
+      // Azure Completion Stream APIに直接リクエストを送信
+      // Completion Stream API: 検索結果を元に最大5つの引用を出力
+      const completionStreamRequestData = {
+        conversation_id: `conv_${Date.now()}`,
+        prompt: "優しく説明して",
+        "selected_chunks": responseData.all_search_results.map((searchResult: any) => ({
+          "query": searchResult.query,
+          "search_results": searchResult.search_results.map((result: any) => ({
+            "filename": result.filename,
+            "heading": "string",
+            "chunk_id": result.chunk_id,
+            "filepath": "string",
+            "references": [
+              "string"
+            ],
+            "page_number": result.page_number,
+            "parent_id": "string",
+            "chunk": result.chunk,
+            "@search.score": 0,
+            "@search.reranker_score": 0,
+            "@search.highlights": {},
+            "@search.captions": {},
+            "sas": "string"
+          }))
+        })),
+        "conversation_history": []
       };
 
-    } catch (error) {
-      console.error('Error in searchTool:', error);
+      const completionStreamResponse = await fetch("https://prjs-api.azurewebsites.net/completions/stream", {
+        method: "POST",
+        headers: {
+          accept: "text/plain",
+          "Content-Type": "application/json",
+          "Llm-Api-Key": AZURE_CONFIG.headers["Llm-Api-Key"] as string,
+          "Llm-Api-Version": AZURE_CONFIG.headers["Llm-Api-Version"] as string,
+          "Llm-Endpoint": AZURE_CONFIG.headers["Llm-Endpoint"] as string,
+          "Llm-Model": AZURE_CONFIG.headers["Llm-Model"] as string,
+        },
+        body: JSON.stringify(completionStreamRequestData),
+      });
+
+      if (!completionStreamResponse.ok) {
+        console.error(`Completion-Stream API error: ${completionStreamResponse.status}`);
+        return {
+          error: `Completion-Stream API failed with status ${completionStreamResponse.status}`,
+          success: false,
+        };
+      }
+
+      // ストリーム応答をテキストとして取得
+      const completionStreamResponseText = await completionStreamResponse.text();
+      
+      // SSE 形式の応答を解析
+      let completionStreamResponseData;
+      try {
+        // "data: " プレフィックスを削除して JSON 部分を抽出
+        const lines = completionStreamResponseText.split('\n');
+        const dataLines = lines.filter(line => line.startsWith('data: ') && !line.includes('[DONE]'));
+        if (dataLines.length > 0) {
+          const lastDataLine = dataLines[dataLines.length - 1];
+          const jsonPart = lastDataLine.substring(6); // "data: " を削除
+          completionStreamResponseData = JSON.parse(jsonPart);
+        } else {
+          // SSE 形式でない場合は、直接 JSON として解析を試行
+          completionStreamResponseData = JSON.parse(completionStreamResponseText);
+        }
+      } catch (parseError) {
+        console.error("Failed to parse response:", parseError);
+        // パース失敗時は生テキストを返す
+        completionStreamResponseData = { text: completionStreamResponseText };
+      }
+      if (necessityResponseData.is_necessary) {
       return {
-        error: error instanceof Error ? error.message : 'Unknown error',
-        success: false
+          completionStreamResponseData: completionStreamResponseData,
+        };
+      } else {
+        return {
+          reason: necessityResponseData.reason,
+        };
+      }
+    } catch (error) {
+      console.error("Error in searchTool:", error);
+      return {
+        error: error instanceof Error ? error.message : "Unknown error",
+        success: false,
       };
     }
   },
 });
 
-// 要約生成ツール (未使用)
-const getSummaryTool = createTool({
-  description: "Get a summary of the data from searchTool using AI",
+// Category Tool
+const categoryTool = createTool({
+  description: "Search for information in the knowledge base, and return the category of the information",
   parameters: z.object({
-    data: z.string().describe("The data to get a summary of"),
-    prompt: z.string().optional().describe("Optional specific instructions for the summary"),
+    prompt: z.string().describe("The prompt to search for"),
   }),
-  execute: async ({ data, prompt }) => {
+  execute: async ({ prompt }) => {
     try {
-      // Azure AIモデルを初期化
-      const model = azure(process.env.AZURE_DEPLOYMENT_NAME!);
-      
-      // dataをパースして構造化（もしJSONの場合）
-      let parsedData;
-      try {
-        parsedData = typeof data === 'string' ? JSON.parse(data) : data;
-      } catch {
-        parsedData = data; // パース失敗の場合はそのまま使用
+      // Azure APIの設定情報
+      const AZURE_CONFIG = {
+        url: "https://prjs-api.azurewebsites.net/search",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          "Llm-Api-Key": process.env.llm_api_key,
+          "Llm-Api-Version": process.env.llm_api_version,
+          "Llm-Endpoint": process.env.llm_endpoint,
+          "Llm-Model": process.env.llm_model,
+          "search-endpoint": process.env.search_endpoint,
+          "search-api-key": process.env.search_api_key,
+          "search-index-name": process.env.search_index_name,
+          "semantic-config-name": process.env.semantic_config_name,
+          "Azure-Storage-Connection-String":
+            process.env.azure_storage_connection_string,
+          "Azure-Container-Name": process.env.azure_container_name,
+        },
+      };
+      // Necessity APIに直接リクエストを送信
+      // Necessity API: ユーザーの要求が検索を必要とするかどうかを判断
+      const necessityRequestData = {
+        prompt: prompt,
+        conversation_id: `conv_${Date.now()}`,
+        conversation_history: [],
+      };
+      const necessityResponse = await fetch("https://prjs-api.azurewebsites.net/necessity", {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          "Llm-Api-Key": AZURE_CONFIG.headers["Llm-Api-Key"] as string,
+          "Llm-Api-Version": AZURE_CONFIG.headers["Llm-Api-Version"] as string,
+          "Llm-Endpoint": AZURE_CONFIG.headers["Llm-Endpoint"] as string,
+          "Llm-Model": AZURE_CONFIG.headers["Llm-Model"] as string,
+        },
+        body: JSON.stringify(necessityRequestData),
+      });
+      if (!necessityResponse.ok) {
+        console.error(`Necessity API error: ${necessityResponse.status}`);
+        return {
+          error: `Necessity API failed with status ${necessityResponse.status}`,
+          success: false,
+        };
       }
-      
-      // コンテンツを抽出・整理
-      let contentToSummarize = '';
-      if (parsedData && typeof parsedData === 'object' && parsedData.data) {
-        // Azure APIからの応答構造に合わせて処理
-        if (parsedData.data.answer) {
-          contentToSummarize = parsedData.data.answer;
-        } else if (parsedData.data.content) {
-          contentToSummarize = parsedData.data.content;
-        } else {
-          contentToSummarize = JSON.stringify(parsedData.data, null, 2);
-        }
-      } else {
-        contentToSummarize = typeof parsedData === 'string' ? parsedData : JSON.stringify(parsedData, null, 2);
-      }
+      const necessityResponseData = await necessityResponse.json();
 
-      // AIに要約生成を依頼
-      const result = await generateText({
-        model,
-        system: `あなたは優秀な要約スペシャリストです。
-        提供されたコンテンツを的確で読みやすい要約に変換してください。
-        以下の指針に従ってください：
-        - 重要なポイントを漏らさない
-        - 簡潔で理解しやすい日本語で回答
-        - 元のコンテンツの趣旨を保持
-        - 不要な詳細は省略
-        - 読み手にとって価値のある情報を優先`,
-        prompt: `以下のコンテンツを要約してください：
+      // リクエストデータを構築
+      const requestData = {
+        conversation_id: `conv_${Date.now()}`,
+        prompt: prompt,
+        filter: ["全集"],
+        top: 5,
+      };
 
-        ${contentToSummarize}
-        ${prompt ? `特別な要約指示: ${prompt}` : ''}
-
-        要約を生成してください。`,
-        temperature: 0.3, // 一貫性を保つため低めに設定
-        maxTokens: 500,   // 要約なので適度な長さに制限
+      // Azure Search APIに直接リクエストを送信
+      // Search API: ユーザーの要求に合致する情報を検索
+      const response = await fetch(AZURE_CONFIG.url, {
+        method: "POST",
+        headers: AZURE_CONFIG.headers as Record<string, string>,
+        body: JSON.stringify(requestData),
       });
 
-      return {
-        success: true,
-        summary: result.text,
-        originalDataLength: contentToSummarize.length,
-        timestamp: new Date().toISOString()
+      if (!response.ok) {
+        console.error(`Search API error: ${response.status}`);
+        return {
+          error: `Search API failed with status ${response.status}`,
+          success: false,
+        };
+      }
+
+      const responseData = await response.json();
+
+      // Azure Category APIに直接リクエストを送信
+      // Category API: カテゴリー分類を行うエンドポイント
+      const categoryRequestData = {
+        prompt: prompt,
+        conversation_id: `conv_${Date.now()}`,
+        search_results: responseData.all_search_results.map((searchResult: any) => ({
+          "query": searchResult.query,
+          "search_results": searchResult.search_results.map((result: any) => ({
+            "filename": result.filename,
+            "heading": "string",
+            "chunk_id": result.chunk_id,
+            "filepath": "string",
+            "references": [
+              "string"
+            ],
+            "page_number": result.page_number,
+            "parent_id": "string",
+            "chunk": result.chunk,
+            "@search.score": 0,
+            "@search.reranker_score": 0,
+            "@search.highlights": {},
+            "@search.captions": {},
+            "sas": "string"
+          }))
+        })),
+        "conversation_history": []
       };
 
-    } catch (error) {
-      console.error('Error in getSummaryTool:', error);
+      const categoryResponse = await fetch("https://prjs-api.azurewebsites.net/category", {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          "Llm-Api-Key": AZURE_CONFIG.headers["Llm-Api-Key"] as string,
+          "Llm-Api-Version": AZURE_CONFIG.headers["Llm-Api-Version"] as string,
+          "Llm-Endpoint": AZURE_CONFIG.headers["Llm-Endpoint"] as string,
+          "Llm-Model": AZURE_CONFIG.headers["Llm-Model"] as string,
+        },
+        body: JSON.stringify(categoryRequestData),
+      });
+
+      if (!categoryResponse.ok) {
+        console.error(`Category API error: ${categoryResponse.status}`);
+        return {
+          error: `Category API failed with status ${categoryResponse.status}`,
+          success: false,
+        };
+      }
+
+      const categoryResponseData = await categoryResponse.json();
+      if (necessityResponseData.is_necessary) {
       return {
+          categoryResponseData: categoryResponseData,
+        };
+      } else {
+        return {
+          reason: necessityResponseData.reason,
+        };
+      }
+    } catch (error) {
+      console.error("Error in searchTool:", error);
+      return {
+        error: error instanceof Error ? error.message : "Unknown error",
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
-        summary: "要約の生成中にエラーが発生しました。"
       };
     }
-  }
+  },
 });
 
 export const tools = {
-    searchTool: searchTool,
-    // getSummaryTool: getSummaryTool,
-}
+  searchTool: searchTool,
+  categoryTool: categoryTool,
+};
