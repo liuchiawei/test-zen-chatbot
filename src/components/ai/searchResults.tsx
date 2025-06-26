@@ -8,7 +8,7 @@ import MarkdownRenderer from "@/components/common/markdownRender";
 import { LibraryBig } from "lucide-react";
 
 export const SearchResults = ({ textScale, style, extracted_chunks, responseData }: SearchResultsProps) => {
-  // データの安全性チェック
+  // もしextracted_chunksが存在しない場合はresponseDataを代わりに使用する
   if (!extracted_chunks || !Array.isArray(extracted_chunks)) {
     console.error("Invalid data structure in SearchResults:", extracted_chunks);
     return (
@@ -65,8 +65,7 @@ export const SearchResults = ({ textScale, style, extracted_chunks, responseData
           ))}
         </div>
     );
-  }
-
+  } else {
   return (
     <div className="flex flex-col gap-2">
       {extracted_chunks.map((chunk: any, index: number) => (
@@ -119,6 +118,7 @@ export const SearchResults = ({ textScale, style, extracted_chunks, responseData
           <SourcePart textScale={textScale} style={style} chunk={chunk} />
         </Sheet>
     ))}
-  </div>
+    </div>
   )
+  }
 }
