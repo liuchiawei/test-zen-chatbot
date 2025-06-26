@@ -15,10 +15,10 @@ export default function Faq({ textScale, style, question, handleSubmit, handleIn
         <input type="hidden" name="question" value={question} />
         <Button 
           type="submit"
-          className={`w-full h-full flex justify-center items-center wrap-break-word whitespace-normal shadow-sm dark:shadow-none cursor-pointer active:translate-y-1
+          className={`w-full h-full flex justify-center items-center wrap-break-word whitespace-normal shadow-sm dark:shadow-none cursor-pointer transition-all active:translate-y-1
           ${style === 'default'
-          ? ''
-          : 'bg-stone-800/50 dark:bg-stone-950/50 hover:bg-stone-950 border border-stone-200 dark:border-stone-400'}
+          ? 'hover:bg-[url(/images/demo_3.jpg)] hover:shadow-md bg-cover bg-center hover:text-stone-50'
+          : 'bg-stone-800/50 dark:bg-stone-950/50 hover:bg-stone-800 hover:dark:bg-stone-950 border border-stone-200 dark:border-stone-400'}
           `}
           onClick={handleButtonClick}
         >

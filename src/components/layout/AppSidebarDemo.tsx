@@ -2,13 +2,9 @@ import { Sidebar, SidebarHeader, SidebarContent, SidebarGroup, SidebarGroupLabel
 import Image from "next/image";
 import Link from "next/link";
 import content from '@/data/content.json';
-import { getAllChatMetadata } from '@/ai/chat-store';
 import NewChatButton from '@/components/common/NewChatButton';
 
 export default async function AppSidebar() {
-  // サーバー側でチャットメタデータ一覧を取得
-  const chatMetadata = await getAllChatMetadata();
-
   return (
     <Sidebar className="bg-background">
       <SidebarHeader className="items-center justify-center w-full py-3 text-stone-50 bg-cover bg-center" style={{ backgroundImage: 'url(/images/demo_3.jpg)' }}>
@@ -24,10 +20,10 @@ export default async function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {chatMetadata.map((chat) => (
-                <Link key={chat.id} href={`/chat/${chat.id}`}>
-                  <SidebarMenuButton className="relative w-full justify-start hover:text-stone-50 before:content-[''] before:absolute before:top-0 before:left-0 before:right-full before:z-0 before:h-full before:bg-accent hover:before:right-0 transition-all before:transition-all before:duration-500" title={chat.title}>
-                    <span className="z-10 truncate">{chat.title}</span>
+              {content.sidebar.demoChatHistory.map((chat) => (
+                <Link key={chat} href={`/chat/${chat}`}>
+                  <SidebarMenuButton className="relative w-full justify-start hover:text-stone-50 before:content-[''] before:absolute before:top-0 before:left-0 before:right-full before:z-0 before:h-full before:bg-accent hover:before:right-0 transition-all before:transition-all before:duration-500" title={chat}>
+                    <span className="z-10 truncate">{chat}</span>
                   </SidebarMenuButton>
                 </Link>
               ))}
