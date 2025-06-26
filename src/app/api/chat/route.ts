@@ -1,12 +1,9 @@
 import { azure } from "@ai-sdk/azure";
 import {
   streamText,
-  appendResponseMessages,
-  appendClientMessage,
-  createIdGenerator,
+  Message,
 } from "ai";
 import { tools } from "@/ai/tools";
-import { saveChat, loadChat } from "@/ai/chat-store";
 import { ChatMode } from "@/lib/props";
 
 // TODO: モードごとのシステムプロンプト
@@ -28,16 +25,7 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   try {
     // get the last message from the client:
-    const { message, id, mode } = await req.json();
-
-    // load the previous messages from the server:
-    const previousMessages = await loadChat(id);
-
-    // append the new message to the previous messages:
-    const messages = appendClientMessage({
-      messages: previousMessages,
-      message,
-    });
+    const { messages, mode } = await req.json();
 
     const result = streamText({
       model: azure(process.env.AZURE_DEPLOYMENT_NAME!),
@@ -47,19 +35,6 @@ export async function POST(req: Request) {
       messages,
       tools,
       maxSteps: mode === "searchOnly" ? 1 : 5,
-      async onFinish({ response }) {
-        await saveChat({
-          id,
-          messages: appendResponseMessages({
-            messages,
-            responseMessages: response.messages,
-          }),
-        });
-      },
-      experimental_generateMessageId: createIdGenerator({
-        prefix: "msgs",
-        size: 16,
-      }),
     });
 
     // consume the stream to ensure it runs to completion & triggers onFinish
