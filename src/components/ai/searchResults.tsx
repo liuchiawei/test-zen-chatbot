@@ -7,7 +7,7 @@ import SourcePart from "@/components/common/sourcePart";
 import MarkdownRenderer from "@/components/common/markdownRender";
 import { LibraryBig } from "lucide-react";
 
-export const SearchResults = ({ textScale, style, extracted_chunks }: SearchResultsProps) => {
+export const SearchResults = ({ textScale, style, extracted_chunks, responseData }: SearchResultsProps) => {
   // データの安全性チェック
   if (!extracted_chunks || !Array.isArray(extracted_chunks)) {
     console.error("Invalid data structure in SearchResults:", extracted_chunks);

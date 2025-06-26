@@ -42,6 +42,7 @@ export type ModeTagsProps = {
 export type SearchResultsProps = {
   textScale: string;
   style: string;
+  responseData: any;
   extracted_chunks: [
     {
       text: string;
