@@ -1,8 +1,5 @@
 import { azure } from "@ai-sdk/azure";
-import {
-  streamText,
-  Message,
-} from "ai";
+import { streamText, UIMessage } from "ai";
 import { tools } from "@/ai/tools";
 import { ChatMode } from "@/lib/props";
 
@@ -25,12 +22,12 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   try {
     // get the last message from the client:
-    const { messages, mode } = await req.json();
+    const { messages, mode, topK, range }: { messages: UIMessage[], mode: ChatMode, topK: number, range: string } = await req.json();
 
     const result = streamText({
       model: azure(process.env.AZURE_DEPLOYMENT_NAME!),
       system: `${SYSTEM_PROMPTS["common"]} ${
-        SYSTEM_PROMPTS[mode as ChatMode] || SYSTEM_PROMPTS["free"]
+        SYSTEM_PROMPTS[mode] || SYSTEM_PROMPTS["searchOnly"]
       }`,
       messages,
       tools,

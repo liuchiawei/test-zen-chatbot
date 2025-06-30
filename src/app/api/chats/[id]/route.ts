@@ -1,14 +1,6 @@
-import { existsSync } from "fs";
-import { readFile, writeFile } from "fs/promises";
-import path from "path";
 import { NextRequest, NextResponse } from "next/server";
 import { Message } from "ai";
-
-// チャットファイルのパスを取得する関数
-function getChatFile(id: string): string {
-  const chatDir = path.join(process.cwd(), ".chats");
-  return path.join(chatDir, `${id}.json`);
-}
+import { getStorage } from "@/lib/db/config";
 
 // チャットデータを読み込むGETエンドポイント
 export async function GET(
@@ -17,16 +9,9 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const chatFile = getChatFile(id);
+    const storage = await getStorage();
 
-    if (!existsSync(chatFile)) {
-      return NextResponse.json(
-        { error: "チャットが見つかりません" },
-        { status: 404 }
-      );
-    }
-
-    const messages: Message[] = JSON.parse(await readFile(chatFile, "utf8"));
+    const messages: Message[] = await storage.loadChat(id);
     return NextResponse.json({ messages });
   } catch (error) {
     console.error("チャット読み込みエラー:", error);
@@ -45,9 +30,9 @@ export async function PUT(
   try {
     const { id } = await params;
     const { messages }: { messages: Message[] } = await request.json();
-    const chatFile = getChatFile(id);
+    const storage = await getStorage();
 
-    await writeFile(chatFile, JSON.stringify(messages, null, 2));
+    await storage.saveChat({ id, messages });
 
     return NextResponse.json({ success: true });
   } catch (error) {

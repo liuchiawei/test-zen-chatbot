@@ -13,7 +13,7 @@ export const SearchResults = ({ textScale, style, extracted_chunks, responseData
     console.error("Invalid data structure in SearchResults:", extracted_chunks);
     return (
           <div className="flex flex-col gap-2">
-            {responseData.all_search_results.map((searchResult: any, index: number) => (
+            {responseData.all_search_results.search_results.map((searchResult: any, index: number) => (
               <Sheet key={index}>
                 <SheetTrigger asChild>
                   <motion.div
