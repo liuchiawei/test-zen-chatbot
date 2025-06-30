@@ -6,13 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Send, Pause } from "lucide-react";
 import content from '@/data/content.json';
 import ModeTags from "./modeTags";
+import TopKSelector from "./topKselector";
 
-export default function InputPart({ handleSubmit, input, handleInputChange, status, stop, style, currentMode, setCurrentMode }: InputPartProps) {
+export default function InputPart({ handleSubmit, input, handleInputChange, status, stop, style, currentMode, setCurrentMode, currentTopK, setTopK, currentRange, setRange }: InputPartProps) {
   return (
     <form
       onSubmit={handleSubmit}
       className='flex flex-col w-full'
     >
+      <TopKSelector currentTopK={currentTopK} setTopK={setTopK} currentRange={currentRange} setRange={setRange} />
       <div className='flex items-center justify-center w-full h-18'>
         <Input
           title={content.chat.input.title}

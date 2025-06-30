@@ -10,7 +10,7 @@ import { createIdGenerator } from 'ai';
 import { ChatMode } from '@/lib/props';
 
 // TODO: モード選択の型定義
-export default function Chat({ chatId, initialMessages, textScale, style, mode, setMode }: { chatId?: string | undefined, initialMessages?: Message[], textScale: string, style: string, mode: ChatMode, setMode: (mode: ChatMode) => void }) {
+export default function Chat({ chatId, initialMessages, textScale, style, mode, setMode, topK, setTopK, range, setRange }: { chatId?: string | undefined, initialMessages?: Message[], textScale: string, style: string, mode: ChatMode, setMode: (mode: ChatMode) => void, topK: number, setTopK: (topK: number) => void, range: string, setRange: (range: string) => void }) {
   const { messages, setMessages, status, input, stop, reload, handleInputChange, handleSubmit, error } = useChat({
     id: chatId,
     initialMessages,
@@ -69,7 +69,7 @@ export default function Chat({ chatId, initialMessages, textScale, style, mode, 
         handleUpdateMessage={handleUpdateMessage}
       />
       {/* ユーザー入力フォーム */}
-      <InputPart handleSubmit={handleSubmit} input={input} handleInputChange={handleInputChange} status={status} stop={stop} style={style} currentMode={mode} setCurrentMode={setMode} />
+      <InputPart handleSubmit={handleSubmit} input={input} handleInputChange={handleInputChange} status={status} stop={stop} style={style} currentMode={mode} setCurrentMode={setMode} currentTopK={topK} setTopK={setTopK} currentRange={range} setRange={setRange} />
     </motion.div>
   );
 }

@@ -2,56 +2,6 @@ import { tool as createTool } from "ai";
 import process from "process";
 import { z } from "zod";
 
-const necessityTool = createTool({
-  description: "Check if the user's request requires a search",
-  parameters: z.object({
-    prompt: z.string().describe("The prompt to check if a search is necessary"),
-  }),
-  execute: async ({ prompt }) => {
-    try {
-      const AZURE_CONFIG = {
-        url: "https://prjs-api.azurewebsites.net/necessity",
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-          "Llm-Api-Key": process.env.llm_api_key,
-          "Llm-Api-Version": process.env.llm_api_version,
-          "Llm-Endpoint": process.env.llm_endpoint,
-          "Llm-Model": process.env.llm_model,
-        },
-      };
-      const requestData = {
-        prompt: prompt,
-        conversation_id: `conv_${Date.now()}`,
-        conversation_history: [],
-      };
-      const response = await fetch(AZURE_CONFIG.url, {
-        method: "POST",
-        headers: AZURE_CONFIG.headers as Record<string, string>,
-        body: JSON.stringify(requestData),
-      });
-      if (!response.ok) {
-        console.error(`Azure API error: ${response.status}`);
-        return {
-          error: `Azure API failed with status ${response.status}`,
-          success: false,
-        };
-      }
-      const responseData = await response.json();
-      return {
-        response: responseData,
-        success: true,
-      };
-    } catch (error) {
-      console.error("Error in necessityTool:", error);
-      return {
-        error: error instanceof Error ? error.message : "Unknown error",
-        success: false,
-      };
-    }
-  },
-});
-
 // Search ツール
 const searchTool = createTool({
   description: "Search for information in the knowledge base",
