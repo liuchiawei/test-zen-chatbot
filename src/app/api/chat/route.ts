@@ -22,8 +22,7 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   try {
     // get the last message from the client:
-    const { messages, requestData }: { messages: UIMessage[], requestData: { mode: ChatMode, topK: number, range: string } } = await req.json();
-    const { mode, topK, range } = requestData;
+    const { messages, mode, topK, range }: { messages: UIMessage[], mode: ChatMode, topK: number, range: string } = await req.json();
 
     const result = streamText({
       model: azure(process.env.AZURE_DEPLOYMENT_NAME!),

@@ -64,7 +64,7 @@ const searchTool = createTool({
         conversation_id: `conv_${Date.now()}`,
         prompt: prompt,
         filter: ["全集"],
-        top: topK,
+        top: topK || 1,
       };
 
       // Azure Search APIに直接リクエストを送信
