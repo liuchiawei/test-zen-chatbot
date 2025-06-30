@@ -7,8 +7,10 @@ const searchTool = createTool({
   description: "Search for information in the knowledge base",
   parameters: z.object({
     prompt: z.string().describe("The prompt to search for"),
+    topK: z.number().describe("The number of top results to return, default is 1, max is 5"),
+    range: z.string().describe("The range of the search, default is '全集'"),
   }),
-  execute: async ({ prompt }) => {
+  execute: async ({ prompt, topK, range }) => {
     try {
       // Azure APIの設定情報
       const AZURE_CONFIG = {
@@ -62,7 +64,7 @@ const searchTool = createTool({
         conversation_id: `conv_${Date.now()}`,
         prompt: prompt,
         filter: ["全集"],
-        top: 5,
+        top: topK,
       };
 
       // Azure Search APIに直接リクエストを送信
