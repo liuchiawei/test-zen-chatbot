@@ -9,11 +9,7 @@ import { ChatMode } from '@/lib/props';
 
 // TODO: モード選択の型定義
 export default function Chat({ textScale, style, mode, setMode, topK, setTopK, range, setRange }: { chatId?: string | undefined, initialMessages?: Message[], textScale: string, style: string, mode: ChatMode, setMode: (mode: ChatMode) => void, topK: number, setTopK: (topK: number) => void, range: string, setRange: (range: string) => void }) {
-  const { messages, setMessages, status, input, stop, reload, handleInputChange, handleSubmit, error } = useChat({
-    // experimental_prepareRequestBody({ messages }) {
-    //   return { messages, mode: mode, topK: topK };
-    // },
-  });
+  const { messages, setMessages, status, input, stop, reload, handleInputChange, handleSubmit, error } = useChat();
 
   const handleDelete = (id: string) => {
     setMessages(messages.filter(message => message.id !== id))

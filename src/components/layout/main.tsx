@@ -12,6 +12,8 @@ export default function Main({ chatId, initialMessages }: { chatId?: string | un
   const [textScale, setTextScale] = useState('md');
   const [style, setStyle] = useState('default');
   const [mode, setMode] = useState<ChatMode>('free');
+  const [topK, setTopK] = useState(1);
+  const [range, setRange] = useState('全集');
 
   const handleTextScale = (scale: string) => {
     setTextScale(scale);
@@ -27,7 +29,7 @@ export default function Main({ chatId, initialMessages }: { chatId?: string | un
       ${style === 'forest' && 'bg-[url("/images/demo_4.jpg")] dark:bg-[url("/images/demo_1.jpg")] bg-fixed bg-cover bg-center'}`
     }>
       <Nav textScale={textScale} onTextScaleChange={handleTextScale} style={style} onStyleChange={handleStyle} />
-      <Chat chatId={chatId} initialMessages={initialMessages} textScale={textScale} style={style} mode={mode} setMode={setMode} />
+      <Chat chatId={chatId} initialMessages={initialMessages} textScale={textScale} style={style} mode={mode} setMode={setMode} topK={topK} setTopK={setTopK} range={range} setRange={setRange} />
       <AppSubTitle className='hidden md:block absolute top-1/2 right-6 -translate-y-1/2' />
       <Footer />
     </div>
