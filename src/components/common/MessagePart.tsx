@@ -287,9 +287,9 @@ export default function MessagePart({
                 >
                   <MarkdownRenderer content={message.content} />
                   {/* TODO: デバッグ用 delete after testing */}
-                  <div className='text-xs text-left max-w-4xl'>
+                  {/* <div className='text-xs text-left max-w-4xl'>
                     {JSON.stringify(message.parts)}
-                  </div>
+                  </div> */}
                 </motion.div> 
               )}
               {/* 生成中にはボタンセット呼び出しない */}
