@@ -206,6 +206,7 @@ const searchTool = createTool({
       }
       if (necessityResponseData.is_necessary) {
       return {
+          responseData: responseData,
           completionStreamResponseData: completionStreamResponseData,
         };
       } else {

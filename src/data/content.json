@@ -26,8 +26,8 @@
     },
     "role": {
       "user": "私",
-      "answer": "池田先生",
-      "answerImage": "/images/ikeda_01.jpg"
+      "answer": "AI",
+      "answerImage": "/images/demo_1.jpg"
     },
     "input": {
       "placeholder": "質問を入力してください",
@@ -43,6 +43,13 @@
     "menu": {
       "title": "会話履歴"
     },
+    "demoChatHistory": [
+      "人間革命とは何ですか？",
+      "人類の「不滅の精神」というべきもの",
+      "二十一世紀における「心の革命」の重要性",
+      "仏法の「一念三千」",
+      "仏教の潮流"
+    ],
     "footer": {
       "title": "メニュー"
     }
