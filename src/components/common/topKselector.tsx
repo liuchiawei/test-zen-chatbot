@@ -3,12 +3,12 @@ import content from '@/data/content.json';
 
 export default function TopKSelector({ currentTopK, setTopK, currentRange, setRange }: { currentTopK: number, setTopK: (topK: number) => void, currentRange: string, setRange: (range: string) => void }) {
   return (
-    <div className="flex justify-between items-center p-2 text-sm">
+    <div className="flex flex-col md:flex-row justify-start md:justify-between items-center p-2 text-sm">
       <div className="flex items-center gap-4">
         <h2 className="text-foreground/40">{content.filter.title}</h2>
         <div className="flex items-center gap-2">
           {content.filter.range.map((range) => (
-            <div key={range} className={`px-3 py-1 rounded-full border border-foreground hover:bg-foreground hover:text-background hover:shadow-lg cursor-pointer transition-all
+            <div key={range} className={`px-3 py-1 rounded-sm md:rounded-full border border-foreground hover:bg-foreground hover:text-background hover:shadow-lg cursor-pointer transition-all
               ${range === currentRange ? 'bg-foreground text-background' : 'bg-background text-foreground'}`} onClick={() => setRange(range)}>
               {range}
             </div>  
@@ -16,7 +16,7 @@ export default function TopKSelector({ currentTopK, setTopK, currentRange, setRa
         </div>
       </div>
       {/* Top K Selector */}
-      <div className="flex items-center gap-4">
+      <div className="self-end flex items-center gap-4">
         <h2 className="text-foreground/40">{content.filter.topK}</h2>
         <Select defaultValue={currentTopK.toString()} onValueChange={(value) => setTopK(parseInt(value))}>
           <SelectTrigger className="text-sm cursor-pointer">

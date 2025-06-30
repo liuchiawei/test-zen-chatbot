@@ -7,7 +7,7 @@ export default function ModeTags({ currentMode, setCurrentMode }: ModeTagsProps)
       {Object.keys(content.modes).map((mode) => (
         <div
           key={mode}
-          className={`px-6 py-2 text-sm rounded-full border border-foreground hover:bg-foreground/70 hover:text-background hover:shadow-lg cursor-pointer transition-all
+          className={`px-4 md:px-6 py-2 text-sm rounded-sm md:rounded-full border border-foreground hover:bg-foreground/70 hover:text-background hover:shadow-lg cursor-pointer transition-all
             ${mode === currentMode ? 'bg-foreground text-background' : 'bg-background text-foreground'}`}
           onClick={() => setCurrentMode(mode as ChatMode)}>
           {content.modes[mode as keyof typeof content.modes]}
