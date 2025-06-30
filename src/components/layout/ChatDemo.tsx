@@ -1,27 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useChat, Message } from '@ai-sdk/react';
-import { AnimatePresence, motion } from 'motion/react';
+import { motion } from 'motion/react';
 import MessagePart from '@/components/common/MessagePart';
 import InputPart from '@/components/common/InputPart';
 import MessageTitle from '@/components/common/MessageTitle';
-import { createIdGenerator } from 'ai';
 import { ChatMode } from '@/lib/props';
 
 // TODO: モード選択の型定義
-export default function Chat({ chatId, initialMessages, textScale, style, mode, setMode, topK, setTopK, range, setRange }: { chatId?: string | undefined, initialMessages?: Message[], textScale: string, style: string, mode: ChatMode, setMode: (mode: ChatMode) => void, topK: number, setTopK: (topK: number) => void, range: string, setRange: (range: string) => void }) {
+export default function Chat({ textScale, style, mode, setMode, topK, setTopK, range, setRange }: { chatId?: string | undefined, initialMessages?: Message[], textScale: string, style: string, mode: ChatMode, setMode: (mode: ChatMode) => void, topK: number, setTopK: (topK: number) => void, range: string, setRange: (range: string) => void }) {
   const { messages, setMessages, status, input, stop, reload, handleInputChange, handleSubmit, error } = useChat({
-    id: chatId,
-    initialMessages,
-    sendExtraMessageFields: true,
-    generateId: createIdGenerator({
-      prefix: 'msgc',
-      size: 16,
-    }),
-    // send the last message and mode to the server:
-    experimental_prepareRequestBody({ messages, id }) {
-      return { message: messages[messages.length - 1], id, mode: mode };
+    experimental_prepareRequestBody({ messages }) {
+      return { messages, mode, topK, range };
     },
   });
 

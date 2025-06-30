@@ -32,6 +32,10 @@ export type InputPartProps = {
   style: string;
   currentMode: ChatMode;
   setCurrentMode: (mode: ChatMode) => void;
+  currentTopK: number;
+  setTopK: (topK: number) => void;
+  currentRange: string;
+  setRange: (range: string) => void;
 };
 
 export type ModeTagsProps = {
@@ -39,9 +43,17 @@ export type ModeTagsProps = {
   setCurrentMode: (mode: ChatMode) => void;
 };
 
+export type TopKSelectorProps = {
+  topK: number;
+  setTopK: (topK: number) => void;
+  currentRange: string;
+  setRange: (range: string) => void;
+};
+
 export type SearchResultsProps = {
   textScale: string;
   style: string;
+  responseData: any;
   extracted_chunks: [
     {
       text: string;

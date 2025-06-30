@@ -7,10 +7,19 @@
     "description": "「人間革命」とは、自己の生命や境涯をより良く変革し、人間として成長・向上していくことを意味します。これは、特別な存在になることではなく、万人の生命に内在する智慧と慈悲と勇気を最大限に発揮し、あらゆる困難や苦悩を乗り越えていく生き方です。"
   },
   "modes": {
-    "searchOnly": "検索のみ",
-    "searchSummary": "検索と要約",
-    "category": "カテゴリー",
-    "free": "自由"
+    "searchOnly": "引用モード",
+    "searchSummary": "要約モード",
+    "category": "深掘りモード",
+    "free": "カスタムモード"
+  },
+  "filter": {
+    "title": "検索範囲",
+    "range": [
+      "全集",
+      "人間革命",
+      "新人間革命"
+    ],
+    "topK": "Top K"
   },
   "chat": {
     "title": "新規チャット",
@@ -26,8 +35,8 @@
     },
     "role": {
       "user": "私",
-      "answer": "池田先生",
-      "answerImage": "/images/ikeda_01.jpg"
+      "answer": "AI",
+      "answerImage": "/images/demo_1.jpg"
     },
     "input": {
       "placeholder": "質問を入力してください",
@@ -43,6 +52,13 @@
     "menu": {
       "title": "会話履歴"
     },
+    "demoChatHistory": [
+      "人間革命とは何ですか？",
+      "人類の「不滅の精神」というべきもの",
+      "二十一世紀における「心の革命」の重要性",
+      "仏法の「一念三千」",
+      "仏教の潮流"
+    ],
     "footer": {
       "title": "メニュー"
     }

@@ -3,7 +3,7 @@ import { Roboto, Noto_Serif_JP } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/common/ThemeProvider";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import AppSidebar from "@/components/layout/AppSidebar";
+import AppSidebar from "@/components/layout/AppSidebarDemo";
 const roboto = Roboto({
   variable: "--font-roboto-sans",
   subsets: ["latin"],
